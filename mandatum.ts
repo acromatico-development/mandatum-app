@@ -1,5 +1,4 @@
 /// <reference types="url-search-params" />
-
 class MandatumApp {
   discount: number;
   days: number;
@@ -9,7 +8,13 @@ class MandatumApp {
   shop: string;
   productId: number;
 
-  constructor(container: HTMLElement, shop: string, descuento: number, dias: number, productId: number){
+  constructor(
+    container: HTMLElement,
+    shop: string,
+    descuento: number,
+    dias: number,
+    productId: number
+  ) {
     this.container = container;
     this.loading = true;
     this.shop = shop;
@@ -31,26 +36,28 @@ class MandatumApp {
     const productId: string = `gid://shopify/Product/${this.productId}`;
 
     try {
-      const codeData = await fetch(`https://e373123d9339.ngrok.io/getDiscountCode?shop=${this.shop}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          productId: productId
-        })
-      }).then(json => json.json());
+      const codeData = await fetch(
+        `https://e373123d9339.ngrok.io/getDiscountCode?shop=${this.shop}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+          }),
+        }
+      ).then((json) => json.json());
 
-      const discoutCode = codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
+      const discoutCode =
+        codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
 
       const discountURL = `https://${this.shop}/discount/${discoutCode}`;
 
       console.log(discountURL);
-
     } catch (error) {
       console.log(error);
     }
-    
   }
 
   toggleModal(): void {
@@ -174,7 +181,9 @@ class MandatumApp {
 
   async addMandatumModal(): Promise<void> {
     const modalContainer: HTMLDivElement = document.createElement("div");
-    const shopifyProduct = await fetch(`${"https://www.lycklig.com.mx/collections/velas/products/vela-de-bengala-0"}.json`).then(json => json.json());
+    const shopifyProduct = await fetch(
+      `${location.href}.json`
+    ).then((json) => json.json());
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
       <div class="mandatum-modal-box">
@@ -276,7 +285,7 @@ class MandatumApp {
       this.addCartMandate();
     });
   }
-  
+
   addMandatumButton(): void {
     const button: HTMLDivElement = document.createElement("div");
     button.classList.add("mandatum-button");
@@ -326,22 +335,53 @@ class MandatumApp {
 }
 
 async function main(): Promise<MandatumApp> {
-  let MandatumInstance: MandatumApp;
-  const scriptShopify: HTMLScriptElement = document.querySelector("script[src*='mandatum']");
-  const queryString: URLSearchParams = new URLSearchParams(scriptShopify.src.split("?")[1]);
-  const shopName: string = queryString.get("shop");
-  const productContainer: HTMLElement = document.getElementById("shopify-section-product-template");
-  const shopifyProduct = await fetch(`${"https://www.lycklig.com.mx/collections/velas/products/vela-de-bengala-0"}.json`).then(json => json.json());
-  // const productID = shopifyProduct.product.id;
-  const productID = 6549458387010;
-  const productInfo: any = await fetch(`https://e373123d9339.ngrok.io/isMandatum?shop=${shopName}&product=${"gid://shopify/Product/" + productID}`).then(json => json.json());
+  let MandatumInstance: MandatumApp,
+    scriptShopify: HTMLScriptElement,
+    queryString: URLSearchParams,
+    shopName: string,
+    productContainer: HTMLElement,
+    shopifyProduct: any,
+    productID: number,
+    productInfo: any,
+    isMandatum: boolean,
+    descuento: number,
+    dias: number;
+  const isProduct: boolean = location.pathname.includes("products");
 
-  const isMandatum: boolean = productInfo.isMandatum;
-  const descuento: number = parseFloat(productInfo.descuento);
-  const dias: number = parseInt(productInfo.dias);
-  
-  if(isMandatum){
-    MandatumInstance = new MandatumApp(productContainer, shopName, descuento, dias, productID);
+  if (isProduct) {
+    console.log("Is Product")
+    scriptShopify = document.querySelector("script[src*='mandatum']");
+    queryString = new URLSearchParams(scriptShopify.src.split("?")[1]);
+    shopName = queryString.get("shop");
+    productContainer = document.getElementById(
+      "shopify-section-product-template"
+    );
+    shopifyProduct = await fetch(
+      `${location.href}.json`
+    ).then((json) => json.json());
+    productID = shopifyProduct.product.id;
+    // productID = 6549458387010;
+    productInfo = await fetch(
+      `https://e373123d9339.ngrok.io/isMandatum?shop=${shopName}&product=${
+        "gid://shopify/Product/" + productID
+      }`
+    ).then((json) => json.json());
+
+    isMandatum = productInfo.isMandatum;
+    descuento = parseFloat(productInfo.descuento);
+    dias = parseInt(productInfo.dias);
+  } else {
+    console.log("No Product")
+  }
+
+  if (isMandatum && isProduct) {
+    MandatumInstance = new MandatumApp(
+      productContainer,
+      shopName,
+      descuento,
+      dias,
+      productID
+    );
 
     MandatumInstance.init();
   }
