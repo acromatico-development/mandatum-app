@@ -1,4 +1,5 @@
 /// <reference types="url-search-params" />
+const serverUrl: string = "e373123d9339.ngrok.io";
 class MandatumApp {
   discount: number;
   days: number;
@@ -37,7 +38,7 @@ class MandatumApp {
 
     try {
       const codeData = await fetch(
-        `https://e373123d9339.ngrok.io/getDiscountCode?shop=${this.shop}`,
+        `https://${serverUrl}/getDiscountCode?shop=${this.shop}`,
         {
           method: "POST",
           headers: {
@@ -85,6 +86,13 @@ class MandatumApp {
 
       .mandatum-button:hover {
         cursor: pointer;
+      }
+
+      .mandatum-button h3 {
+        color: white;
+        text-align: center;
+        margin: 0;
+        font-size: 20px;
       }
 
       #mandatum_logo {
@@ -139,6 +147,22 @@ class MandatumApp {
         width: 100%;
         padding: 20px;
         margin: 0;
+      }
+
+      .mandatum-modal .mandatum-modal-box h3 {
+        padding: 20px;
+        text-align: center;
+        box-sizing: border-box;
+        width: 100%;
+        argin: 0;
+      }
+
+      .mandatum-modal .mandatum-modal-box p {
+        padding: 20px;
+        text-align: center;
+        box-sizing: border-box;
+        width: 100%;
+        argin: 0;
       }
 
       .mandatum-modal .mandatum-modal-box img {
@@ -362,7 +386,7 @@ async function main(): Promise<MandatumApp> {
     productID = shopifyProduct.product.id;
     // productID = 6549458387010;
     productInfo = await fetch(
-      `https://e373123d9339.ngrok.io/isMandatum?shop=${shopName}&product=${
+      `https://${serverUrl}/isMandatum?shop=${shopName}&product=${
         "gid://shopify/Product/" + productID
       }`
     ).then((json) => json.json());
