@@ -1,0 +1,19 @@
+{
+  "name": "mandatum_libary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "snowpack dev",
+    "build": "snowpack build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "snowpack": "^3.5.1"
+  },
+  "dependencies": {
+    "@types/url-search-params": "^1.1.0"
+  }
+}
