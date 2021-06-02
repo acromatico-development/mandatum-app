@@ -65,6 +65,8 @@ class MandatumApp {
       const discountCode =
         codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
 
+      console.log(this.shopifyProduct);
+
       const productData = await this.shopifyClient.product.fetchByHandle(this.shopifyProduct.product.handle);
 
       console.log(productData);
@@ -451,4 +453,6 @@ async function main(): Promise<MandatumApp> {
   return MandatumInstance;
 }
 
-main();
+main().then(App => {
+  window.mandatum = App;
+})
