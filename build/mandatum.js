@@ -1,11 +1,18 @@
+import ShopifyClient from "./_snowpack/pkg/shopify-buy.js";
+const serverUrl = "e373123d9339.ngrok.io";
 class MandatumApp {
-  constructor(container, shop, descuento, dias, productId) {
+  constructor(container, shop, descuento, dias, productId, storefrontToken, shopifyProduct) {
     this.container = container;
     this.loading = true;
     this.shop = shop;
     this.discount = descuento;
     this.days = dias;
     this.productId = productId;
+    this.shopifyProduct = shopifyProduct;
+    this.shopifyClient = ShopifyClient.buildClient({
+      domain: shop,
+      storefrontAccessToken: storefrontToken
+    }).shop;
   }
   async init() {
     this.addStyles();
@@ -17,7 +24,7 @@ class MandatumApp {
   async addCartMandate() {
     const productId = `gid://shopify/Product/${this.productId}`;
     try {
-      const codeData = await fetch(`https://e373123d9339.ngrok.io/getDiscountCode?shop=${this.shop}`, {
+      const codeData = await fetch(`https://${serverUrl}/getDiscountCode?shop=${this.shop}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -26,9 +33,23 @@ class MandatumApp {
           productId
         })
       }).then((json) => json.json());
-      const discoutCode = codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
-      const discountURL = `https://${this.shop}/discount/${discoutCode}`;
-      console.log(discountURL);
+      const discountCode = codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
+      const productData = await this.shopifyClient.product.fetchByHandle(this.shopifyProduct.product.handle);
+      console.log(productData);
+      let newCheckout = await this.shopifyClient.checkout.create();
+      const input = {customAttributes: [{key: "Mandatum Order", value: "true"}]};
+      newCheckout = await this.shopifyClient.checkout.updateAttributes(newCheckout.id, input);
+      const lineItemsToAdd = [
+        {
+          variantId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8yOTEwNjAyMjc5Mg==",
+          quantity: 1,
+          customAttributes: [{key: "Mandatum Discount", value: this.discount}]
+        }
+      ];
+      newCheckout = await this.shopifyClient.checkout.addLineItems(newCheckout.id, lineItemsToAdd);
+      newCheckout = await this.shopifyClient.checkout.addDiscount(newCheckout.id, discountCode);
+      const checkoutURL = newCheckout.onlineStoreUrl;
+      console.log(checkoutURL);
     } catch (error) {
       console.log(error);
     }
@@ -56,6 +77,13 @@ class MandatumApp {
 
       .mandatum-button:hover {
         cursor: pointer;
+      }
+
+      .mandatum-button h3 {
+        color: white;
+        text-align: center;
+        margin: 0;
+        font-size: 20px;
       }
 
       #mandatum_logo {
@@ -110,6 +138,22 @@ class MandatumApp {
         width: 100%;
         padding: 20px;
         margin: 0;
+      }
+
+      .mandatum-modal .mandatum-modal-box h3 {
+        padding: 20px;
+        text-align: center;
+        box-sizing: border-box;
+        width: 100%;
+        argin: 0;
+      }
+
+      .mandatum-modal .mandatum-modal-box p {
+        padding: 20px;
+        text-align: center;
+        box-sizing: border-box;
+        width: 100%;
+        argin: 0;
       }
 
       .mandatum-modal .mandatum-modal-box img {
@@ -305,7 +349,7 @@ async function main() {
     productContainer = document.getElementById("shopify-section-product-template");
     shopifyProduct = await fetch(`${location.href}.json`).then((json) => json.json());
     productID = shopifyProduct.product.id;
-    productInfo = await fetch(`https://e373123d9339.ngrok.io/isMandatum?shop=${shopName}&product=${"gid://shopify/Product/" + productID}`).then((json) => json.json());
+    productInfo = await fetch(`https://${serverUrl}/isMandatum?shop=${shopName}&product=${"gid://shopify/Product/" + productID}`).then((json) => json.json());
     isMandatum = productInfo.isMandatum;
     descuento = parseFloat(productInfo.descuento);
     dias = parseInt(productInfo.dias);
@@ -313,7 +357,8 @@ async function main() {
     console.log("No Product");
   }
   if (isMandatum && isProduct) {
-    MandatumInstance = new MandatumApp(productContainer, shopName, descuento, dias, productID);
+    const storefrontToken = productInfo.storeFrontToken.accessToken;
+    MandatumInstance = new MandatumApp(productContainer, shopName, descuento, dias, productID, storefrontToken, shopifyProduct);
     MandatumInstance.init();
   }
   return MandatumInstance;

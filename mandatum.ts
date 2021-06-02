@@ -1,4 +1,6 @@
 /// <reference types="url-search-params" />
+import ShopifyClient from "shopify-buy";
+
 const serverUrl: string = "e373123d9339.ngrok.io";
 class MandatumApp {
   discount: number;
@@ -8,13 +10,17 @@ class MandatumApp {
   loading: boolean;
   shop: string;
   productId: number;
+  shopifyClient;
+  shopifyProduct;
 
   constructor(
     container: HTMLElement,
     shop: string,
     descuento: number,
     dias: number,
-    productId: number
+    productId: number,
+    storefrontToken: string,
+    shopifyProduct
   ) {
     this.container = container;
     this.loading = true;
@@ -22,6 +28,12 @@ class MandatumApp {
     this.discount = descuento;
     this.days = dias;
     this.productId = productId;
+    this.shopifyProduct = shopifyProduct;
+
+    this.shopifyClient = ShopifyClient.buildClient({
+      domain: shop,
+      storefrontAccessToken: storefrontToken,
+    }).shop;
   }
 
   async init(): Promise<Boolean> {
@@ -50,12 +62,34 @@ class MandatumApp {
         }
       ).then((json) => json.json());
 
-      const discoutCode =
+      const discountCode =
         codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
 
-      const discountURL = `https://${this.shop}/discount/${discoutCode}`;
+      const productData = await this.shopifyClient.product.fetchByHandle(this.shopifyProduct.product.handle);
 
-      console.log(discountURL);
+      console.log(productData);
+
+      let newCheckout = await this.shopifyClient.checkout.create();
+      
+      const input = {customAttributes: [{key: "Mandatum Order", value: "true"}]};
+
+      newCheckout = await this.shopifyClient.checkout.updateAttributes(newCheckout.id, input);
+
+      const lineItemsToAdd = [
+        {
+          variantId: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8yOTEwNjAyMjc5Mg==',
+          quantity: 1,
+          customAttributes: [{key: "Mandatum Discount", value: this.discount}]
+        }
+      ];
+      
+      newCheckout = await this.shopifyClient.checkout.addLineItems(newCheckout.id, lineItemsToAdd)
+
+      newCheckout = await this.shopifyClient.checkout.addDiscount(newCheckout.id, discountCode)
+
+      const checkoutURL = newCheckout.onlineStoreUrl;
+
+      console.log(checkoutURL);
     } catch (error) {
       console.log(error);
     }
@@ -205,9 +239,9 @@ class MandatumApp {
 
   async addMandatumModal(): Promise<void> {
     const modalContainer: HTMLDivElement = document.createElement("div");
-    const shopifyProduct = await fetch(
-      `${location.href}.json`
-    ).then((json) => json.json());
+    const shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
+      json.json()
+    );
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
       <div class="mandatum-modal-box">
@@ -373,16 +407,16 @@ async function main(): Promise<MandatumApp> {
   const isProduct: boolean = location.pathname.includes("products");
 
   if (isProduct) {
-    console.log("Is Product")
+    console.log("Is Product");
     scriptShopify = document.querySelector("script[src*='mandatum']");
     queryString = new URLSearchParams(scriptShopify.src.split("?")[1]);
     shopName = queryString.get("shop");
     productContainer = document.getElementById(
       "shopify-section-product-template"
     );
-    shopifyProduct = await fetch(
-      `${location.href}.json`
-    ).then((json) => json.json());
+    shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
+      json.json()
+    );
     productID = shopifyProduct.product.id;
     // productID = 6549458387010;
     productInfo = await fetch(
@@ -395,16 +429,20 @@ async function main(): Promise<MandatumApp> {
     descuento = parseFloat(productInfo.descuento);
     dias = parseInt(productInfo.dias);
   } else {
-    console.log("No Product")
+    console.log("No Product");
   }
 
   if (isMandatum && isProduct) {
+    const storefrontToken: string = productInfo.storeFrontToken.accessToken;
+
     MandatumInstance = new MandatumApp(
       productContainer,
       shopName,
       descuento,
       dias,
-      productID
+      productID,
+      storefrontToken,
+      shopifyProduct
     );
 
     MandatumInstance.init();
