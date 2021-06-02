@@ -33,7 +33,7 @@ class MandatumApp {
     this.shopifyClient = ShopifyClient.buildClient({
       domain: shop,
       storefrontAccessToken: storefrontToken,
-    }).shop;
+    });
   }
 
   async init(): Promise<Boolean> {
