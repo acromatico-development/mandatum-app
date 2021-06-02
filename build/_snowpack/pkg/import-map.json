@@ -1,5 +1,0 @@
-{
-  "imports": {
-    "shopify-buy": "./shopify-buy.js"
-  }
-}
