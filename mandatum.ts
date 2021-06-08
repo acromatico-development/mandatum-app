@@ -528,6 +528,8 @@ async function main(): Promise<MandatumApp> {
       shopifyProduct.product.handle
     );
 
+    console.log("product", newShopProd)
+
     MandatumInstance = new MandatumApp(
       productContainer,
       shopName,
