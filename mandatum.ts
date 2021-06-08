@@ -50,11 +50,8 @@ class MandatumApp {
 
   async addCartMandate(): Promise<any> {
     const productId: string = `gid://shopify/Product/${this.productId}`;
-    const variant =  this.shopifyVariant;
 
     console.log("Shopify Variant", this.shopifyVariant);
-    
-    let variantId: string;
 
     try {
       const codeData = await fetch(
@@ -526,7 +523,8 @@ async function main(): Promise<MandatumApp> {
       domain: shopName,
       storefrontAccessToken: storefrontToken,
     });
-    const newShopProd = tempClient.product.fetchByHandle(
+
+    const newShopProd = await tempClient.product.fetchByHandle(
       shopifyProduct.product.handle
     );
 
