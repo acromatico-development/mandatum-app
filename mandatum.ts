@@ -47,6 +47,8 @@ class MandatumApp {
 
   async addCartMandate(): Promise<any> {
     const productId: string = `gid://shopify/Product/${this.productId}`;
+    const variant: HTMLSelectElement = document.querySelector("#product-select-mandatum");
+    const variantId: string = variant.value;
 
     try {
       const codeData = await fetch(
@@ -86,13 +88,15 @@ class MandatumApp {
 
       const lineItemsToAdd = [
         {
-          variantId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8yOTEwNjAyMjc5Mg==",
+          variantId: variantId,
           quantity: 1,
           customAttributes: [
             { key: "Mandatum Discount", value: this.discount },
           ],
         },
       ];
+
+      console.log(lineItemsToAdd);
 
       newCheckout = await this.shopifyClient.checkout.addLineItems(
         newCheckout.id,
@@ -251,6 +255,11 @@ class MandatumApp {
         background-color: purple;
         color: white;
         border: none;
+      }
+
+      .mandatum-modal .mandatum-modal-box .mandatum-modal-buttons button[disabled] {
+        background-color: grey;
+        cursor: auto;
       }
 
       @media (max-width: 600px) {
