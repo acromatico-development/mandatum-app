@@ -12,6 +12,7 @@ class MandatumApp {
   productId: number;
   shopifyClient;
   shopifyProduct;
+  shopifyVariant;
 
   constructor(
     container: HTMLElement,
@@ -47,8 +48,8 @@ class MandatumApp {
 
   async addCartMandate(): Promise<any> {
     const productId: string = `gid://shopify/Product/${this.productId}`;
-    const variant: HTMLSelectElement = document.querySelector("#product-select-mandatum");
-    const variantId: string = variant.value;
+    const variant =  this.shopifyVariant;
+    const variantId: string = variant.id;
 
     try {
       const codeData = await fetch(
@@ -399,7 +400,7 @@ class MandatumApp {
     // @ts-ignore
     new Shopify.OptionSelectors("product-select-mandatum", {
       product: shopifyProduct.product,
-      onVariantSelected: function (variant, selector) {
+      onVariantSelected: (variant, selector) => {
         const precioMandatum: HTMLParagraphElement = document.querySelector(
           "#product-price-mandatum"
         );
@@ -412,6 +413,11 @@ class MandatumApp {
             ? ` <del>${Shopify.formatMoney(variant.compare_at_price, "")}</del>`
             : ""
         }`;
+
+        this.shopifyVariant = variant;
+
+        console.log(variant);
+
         if (variant.available) {
           mandateButton.disabled = false;
         } else {
