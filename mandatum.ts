@@ -67,27 +67,42 @@ class MandatumApp {
 
       console.log(this.shopifyProduct);
 
-      const productData = await this.shopifyClient.product.fetchByHandle(this.shopifyProduct.product.handle);
+      const productData = await this.shopifyClient.product.fetchByHandle(
+        this.shopifyProduct.product.handle
+      );
 
       console.log(productData);
 
       let newCheckout = await this.shopifyClient.checkout.create();
-      
-      const input = {customAttributes: [{key: "Mandatum Order", value: "true"}]};
 
-      newCheckout = await this.shopifyClient.checkout.updateAttributes(newCheckout.id, input);
+      const input = {
+        customAttributes: [{ key: "Mandatum Order", value: "true" }],
+      };
+
+      newCheckout = await this.shopifyClient.checkout.updateAttributes(
+        newCheckout.id,
+        input
+      );
 
       const lineItemsToAdd = [
         {
-          variantId: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8yOTEwNjAyMjc5Mg==',
+          variantId: "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8yOTEwNjAyMjc5Mg==",
           quantity: 1,
-          customAttributes: [{key: "Mandatum Discount", value: this.discount}]
-        }
+          customAttributes: [
+            { key: "Mandatum Discount", value: this.discount },
+          ],
+        },
       ];
-      
-      newCheckout = await this.shopifyClient.checkout.addLineItems(newCheckout.id, lineItemsToAdd)
 
-      newCheckout = await this.shopifyClient.checkout.addDiscount(newCheckout.id, discountCode)
+      newCheckout = await this.shopifyClient.checkout.addLineItems(
+        newCheckout.id,
+        lineItemsToAdd
+      );
+
+      newCheckout = await this.shopifyClient.checkout.addDiscount(
+        newCheckout.id,
+        discountCode
+      );
 
       const checkoutURL = newCheckout.onlineStoreUrl;
 
@@ -209,7 +224,8 @@ class MandatumApp {
         width: 100%;
       }
 
-      .mandatum-modal select {
+      .mandatum-modal .single-option-selector {
+        opacity: 1;
         width: 90%;
         padding: 10px 15px;
         display: block;
@@ -335,16 +351,23 @@ class MandatumApp {
           </g>
         </svg>
         </div>
-        <p class="mandatum-modal-intro">If you wait ${this.days} days for the delivery we donate, and you pay less.</p>
-        <img src="${shopifyProduct.product.image.src}" alt="${shopifyProduct.product.title}"/>
+        <p class="mandatum-modal-intro">If you wait ${
+          this.days
+        } days for the delivery we donate, and you pay less.</p>
+        <img src="${shopifyProduct.product.image.src}" alt="${
+      shopifyProduct.product.title
+    }"/>
         <h3>${shopifyProduct.product.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${shopifyProduct.product.variants.reduce((prev, curr) => {
-            const newOption = `<option value="${ curr.id }">${ curr.title } - \$${ curr.price }</option>`;
+            // @ts-ignore
+            const newOption = `<option value="${curr.id}">${curr.title} - ${Shopify.formatMoney(variant.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum">\$${shopifyProduct.product.variants[0].price}</p>
+        <p id="product-price-mandatum">\$${
+          shopifyProduct.product.variants[0].price
+        }</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
@@ -365,9 +388,28 @@ class MandatumApp {
     });
 
     // @ts-ignore
-    new Shopify.OptionSelectors("product-select-mandatum", { product: shopifyProduct.product, onVariantSelected: function(){
-      console.log("cambio");
-    }});
+    new Shopify.OptionSelectors("product-select-mandatum", {
+      product: shopifyProduct.product,
+      onVariantSelected: function (variant, selector) {
+        const precioMandatum: HTMLParagraphElement = document.querySelector(
+          "#product-price-mandatum"
+        );
+        const mandateButton: HTMLButtonElement =
+          document.querySelector("#mandate_mandate");
+        // @ts-ignore
+        precioMandatum.innerText = `${Shopify.formatMoney(variant.price, "")}${
+          variant.compare_at_price > variant.price
+            // @ts-ignore
+            ? ` <del>${Shopify.formatMoney(variant.compare_at_price, "")}</del>`
+            : ""
+        }`;
+        if (variant.available) {
+          mandateButton.disabled = false;
+        } else {
+          mandateButton.disabled = true;
+        }
+      },
+    });
   }
 
   addMandatumButton(): void {
@@ -477,7 +519,7 @@ async function main(): Promise<MandatumApp> {
   return MandatumInstance;
 }
 
-main().then(App => {
+main().then((App) => {
   // @ts-ignore
   window.mandatum = App;
-})
+});
