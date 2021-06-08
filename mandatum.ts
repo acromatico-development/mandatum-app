@@ -500,7 +500,7 @@ async function main(): Promise<MandatumApp> {
     productContainer = document.getElementById(
       "shopify-section-product-template"
     );
-    shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
+    shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then((json) =>
       json.json()
     );
     productID = shopifyProduct.product.id;
@@ -546,4 +546,7 @@ async function main(): Promise<MandatumApp> {
   return MandatumInstance;
 }
 
-main();
+main().then((App) => {
+  // @ts-ignore
+  window.mandatum = App;
+});
