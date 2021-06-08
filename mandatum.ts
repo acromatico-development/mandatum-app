@@ -99,7 +99,7 @@ class MandatumApp {
           variantId: variantIdShopify,
           quantity: 1,
           customAttributes: [
-            { key: "Mandatum Discount", value: this.discount },
+            { key: "Mandatum Discount", value: `${this.discount}` },
           ],
         },
       ];
