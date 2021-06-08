@@ -73,13 +73,8 @@ class MandatumApp {
       const discountCode =
         codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
 
-      console.log(this.shopifyProduct);
 
-      const productData = await this.shopifyClient.product.fetchByHandle(
-        this.shopifyProduct.product.handle
-      );
-
-      console.log("Shopify Product", productData);
+      console.log("Shopify Product", this.shopifyProduct);
 
       let newCheckout = await this.shopifyClient.checkout.create();
 
@@ -92,14 +87,14 @@ class MandatumApp {
         input
       );
 
-      const variantIdShopify = productData.variants.find(variant => variant.title === this.shopifyVariant.title).id;
+      const variantIdShopify = this.shopifyProduct.variants.find(variant => variant.title === this.shopifyVariant.title).id;
 
       const lineItemsToAdd = [
         {
           variantId: variantIdShopify,
           quantity: 1,
           customAttributes: [
-            { key: "Mandatum Discount", value: `${this.discount}` },
+            { key: "Mandatum Discount", value: `${this.discount}%` },
           ],
         },
       ];
@@ -116,9 +111,11 @@ class MandatumApp {
         discountCode
       );
 
-      const checkoutURL = newCheckout.onlineStoreUrl;
+      let checkoutURL = newCheckout.webUrl;
 
-      console.log(newCheckout);
+      console.log(checkoutURL);
+
+      location.assign(checkoutURL);
     } catch (error) {
       console.log(error);
     }
@@ -408,6 +405,8 @@ class MandatumApp {
     new Shopify.OptionSelectors("product-select-mandatum", {
       product: shopifyProduct.product,
       onVariantSelected: (variant, selector) => {
+        console.log(variant);
+        console.log(selector);
         const precioMandatum: HTMLParagraphElement = document.querySelector(
           "#product-price-mandatum"
         );
@@ -423,7 +422,7 @@ class MandatumApp {
 
         this.shopifyVariant = variant;
 
-        console.log(variant);
+        
 
         if (variant.available) {
           mandateButton.disabled = false;
@@ -508,7 +507,6 @@ async function main(): Promise<MandatumApp> {
       json.json()
     );
     productID = shopifyProduct.product.id;
-    // productID = 6549458387010;
     productInfo = await fetch(
       `https://${serverUrl}/isMandatum?shop=${shopName}&product=${
         "gid://shopify/Product/" + productID
@@ -524,6 +522,13 @@ async function main(): Promise<MandatumApp> {
 
   if (isMandatum && isProduct) {
     const storefrontToken: string = productInfo.storeFrontToken.accessToken;
+    const tempClient = ShopifyClient.buildClient({
+      domain: shopName,
+      storefrontAccessToken: storefrontToken,
+    });
+    const newShopProd = tempClient.product.fetchByHandle(
+      shopifyProduct.product.handle
+    );
 
     MandatumInstance = new MandatumApp(
       productContainer,
@@ -532,7 +537,7 @@ async function main(): Promise<MandatumApp> {
       dias,
       productID,
       storefrontToken,
-      shopifyProduct
+      newShopProd
     );
 
     MandatumInstance.init();
