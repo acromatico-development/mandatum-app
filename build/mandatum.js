@@ -103,10 +103,16 @@ var q=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         width: 80%;
       }
 
-      .mandatum-modal #product-select-mandatum {
+      .mandatum-modal .selector-wrapper {
+        width: 100%;
+      }
+
+      .mandatum-modal select {
         width: 90%;
         padding: 10px 15px;
+        display: block;
         border: 1px solid purple;
+        margin: 0 auto;
       }
 
       .mandatum-modal .mandatum-modal-box .mandatum-modal-buttons {
