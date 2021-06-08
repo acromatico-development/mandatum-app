@@ -244,6 +244,7 @@ class MandatumApp {
     const shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
       json.json()
     );
+
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
       <div class="mandatum-modal-box">
@@ -325,6 +326,12 @@ class MandatumApp {
         <p class="mandatum-modal-intro">If you wait ${this.days} days for the delivery we donate, and you pay less.</p>
         <img src="${shopifyProduct.product.image.src}" alt="${shopifyProduct.product.title}"/>
         <h3>${shopifyProduct.product.title}</h3>
+        <select id="product-select-mandatum" name="product-select-mandatum">
+          ${shopifyProduct.product.variants.reduce((prev, curr) => {
+            const newOption = `<option value="${ curr.id }">${ curr.title } - \$${ curr.price }</option>`;
+            return prev + newOption;
+          }, "")}
+        </select>
         <p>${shopifyProduct.product.variants[0].price}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
@@ -454,5 +461,6 @@ async function main(): Promise<MandatumApp> {
 }
 
 main().then(App => {
+  // @ts-ignore
   window.mandatum = App;
 })
