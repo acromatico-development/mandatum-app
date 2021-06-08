@@ -546,7 +546,4 @@ async function main(): Promise<MandatumApp> {
   return MandatumInstance;
 }
 
-main().then((App) => {
-  // @ts-ignore
-  window.mandatum = App;
-});
+main();
