@@ -511,6 +511,7 @@ async function main(): Promise<MandatumApp> {
     isMandatum = productInfo.isMandatum;
     descuento = parseFloat(productInfo.descuento);
     dias = parseInt(productInfo.dias);
+    console.log(productInfo);
   } else {
     console.log("No Product");
   }
