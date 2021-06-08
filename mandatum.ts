@@ -71,7 +71,7 @@ class MandatumApp {
       console.log(this.shopifyProduct);
 
       const productData = await this.shopifyClient.product.fetchByHandle(
-        this.shopifyProduct.product.handle
+        "52-1912-crayola-crayones-so-big-12-ct-grueso"
       );
 
       console.log(productData);
