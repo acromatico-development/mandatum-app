@@ -365,7 +365,7 @@ class MandatumApp {
         <p class="mandatum-modal-intro">If you wait ${
           this.days
         } days for the delivery we donate, and you pay less.</p>
-        <img src="${this.shopifyProduct.image.src}" alt="${
+        <img src="${this.shopifyProduct.images[0].src}" alt="${
           this.shopifyProduct.title
     }"/>
         <h3>${this.shopifyProduct.title}</h3>

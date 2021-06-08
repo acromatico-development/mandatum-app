@@ -228,7 +228,7 @@ var L=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         </svg>
         </div>
         <p class="mandatum-modal-intro">If you wait ${this.days} days for the delivery we donate, and you pay less.</p>
-        <img src="${this.shopifyProduct.image.src}" alt="${this.shopifyProduct.title}"/>
+        <img src="${this.shopifyProduct.images[0].src}" alt="${this.shopifyProduct.title}"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((n,i)=>{let a=`<option value="${i.id}">${i.title} - ${Shopify.formatMoney(i.price,"")}</option>`;return n+a},"")}
