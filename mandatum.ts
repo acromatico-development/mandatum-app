@@ -54,7 +54,7 @@ class MandatumApp {
 
     console.log("Shopify Variant", this.shopifyVariant);
     
-    const variantId: string = variant.id;
+    let variantId: string;
 
     try {
       const codeData = await fetch(
@@ -92,9 +92,11 @@ class MandatumApp {
         input
       );
 
+      const variantIdShopify = productData.variants.find(variant => variant.title === this.shopifyVariant.title).id;
+
       const lineItemsToAdd = [
         {
-          variantId: variantId,
+          variantId: variantIdShopify,
           quantity: 1,
           customAttributes: [
             { key: "Mandatum Discount", value: this.discount },
