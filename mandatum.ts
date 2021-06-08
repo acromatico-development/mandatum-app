@@ -280,9 +280,9 @@ class MandatumApp {
 
   async addMandatumModal(): Promise<void> {
     const modalContainer: HTMLDivElement = document.createElement("div");
-    // const shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
-    //   json.json()
-    // );
+    const shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then((json) =>
+      json.json()
+    );
 
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
@@ -398,9 +398,13 @@ class MandatumApp {
       this.addCartMandate();
     });
 
+    const fixedProduct = { ...shopifyProduct.product, variants: [...shopifyProduct.product.variants.map(varian => ({...varian, available: true }))] };
+
+    console.log(fixedProduct);
+
     // @ts-ignore
     new Shopify.OptionSelectors("product-select-mandatum", {
-      product: this.shopifyProduct,
+      product: fixedProduct,
       onVariantSelected: (variant, selector) => {
         console.log(variant);
         console.log(selector);
