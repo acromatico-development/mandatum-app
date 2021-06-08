@@ -212,6 +212,9 @@ var q=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         <p class="mandatum-modal-intro">If you wait ${this.days} days for the delivery we donate, and you pay less.</p>
         <img src="${n.product.image.src}" alt="${n.product.title}"/>
         <h3>${n.product.title}</h3>
+        <select id="product-select-mandatum" name="product-select-mandatum">
+          ${n.product.variants.reduce((i,a)=>{let d=`<option value="${a.id}">${a.title} - $${a.price}</option>`;return i+d},"")}
+        </select>
         <p>${n.product.variants[0].price}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
