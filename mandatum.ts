@@ -70,7 +70,6 @@ class MandatumApp {
       const discountCode =
         codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
 
-
       console.log("Shopify Product", this.shopifyProduct);
 
       let newCheckout = await this.shopifyClient.checkout.create();
@@ -84,7 +83,9 @@ class MandatumApp {
         input
       );
 
-      const variantIdShopify = this.shopifyProduct.variants.find(variant => variant.title === this.shopifyVariant.title).id;
+      const variantIdShopify = this.shopifyProduct.variants.find(
+        (variant) => variant.title === this.shopifyVariant.title
+      ).id;
 
       const lineItemsToAdd = [
         {
@@ -280,9 +281,9 @@ class MandatumApp {
 
   async addMandatumModal(): Promise<void> {
     const modalContainer: HTMLDivElement = document.createElement("div");
-    const shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then((json) =>
-      json.json()
-    );
+    const shopifyProduct = await fetch(
+      `${location.href.split("?")[0]}.json`
+    ).then((json) => json.json());
 
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
@@ -366,13 +367,16 @@ class MandatumApp {
           this.days
         } days for the delivery we donate, and you pay less.</p>
         <img src="${this.shopifyProduct.images[0].src}" alt="${
-          this.shopifyProduct.title
+      this.shopifyProduct.title
     }"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((prev, curr) => {
             // @ts-ignore
-            const newOption = `<option value="${curr.id}">${curr.title} - ${Shopify.formatMoney(curr.price, "")}</option>`;
+            const newOption = `<option value="${curr.id}">${
+              curr.title
+            // @ts-ignore
+            } - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
@@ -398,7 +402,17 @@ class MandatumApp {
       this.addCartMandate();
     });
 
-    const fixedProduct = { ...shopifyProduct.product, variants: [...shopifyProduct.product.variants.map(varian => ({...varian, available: true }))] };
+    const fixedProduct = {
+      ...shopifyProduct.product,
+      variants: [
+        ...shopifyProduct.product.variants.map((varian) => ({
+          ...varian,
+          available: this.shopifyProduct.variants.find(
+            (ddd) => ddd.title === varian.title
+          ).available,
+        })),
+      ],
+    };
 
     console.log(fixedProduct);
 
@@ -416,14 +430,12 @@ class MandatumApp {
         // @ts-ignore
         precioMandatum.innerText = `${Shopify.formatMoney(variant.price, "")}${
           variant.compare_at_price > variant.price
-            // @ts-ignore
-            ? ` <del>${Shopify.formatMoney(variant.compare_at_price, "")}</del>`
+            ? // @ts-ignore
+              ` <del>${Shopify.formatMoney(variant.compare_at_price, "")}</del>`
             : ""
         }`;
 
         this.shopifyVariant = variant;
-
-        
 
         if (variant.available) {
           mandateButton.disabled = false;
@@ -504,8 +516,8 @@ async function main(): Promise<MandatumApp> {
     productContainer = document.getElementById(
       "shopify-section-product-template"
     );
-    shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then((json) =>
-      json.json()
+    shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then(
+      (json) => json.json()
     );
     productID = shopifyProduct.product.id;
     productInfo = await fetch(
@@ -532,7 +544,7 @@ async function main(): Promise<MandatumApp> {
       shopifyProduct.product.handle
     );
 
-    console.log("product", newShopProd)
+    console.log("product", newShopProd);
 
     MandatumInstance = new MandatumApp(
       productContainer,
