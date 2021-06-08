@@ -150,7 +150,7 @@ var L=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
           display: none;
         }
       }
-    `,t.appendChild(n)}async addMandatumModal(){let t=document.createElement("div"),n=await fetch(`${location.href}.json`).then(i=>i.json());t.classList.add("mandatum-modal"),t.innerHTML=`
+    `,t.appendChild(n)}async addMandatumModal(){let t=document.createElement("div");t.classList.add("mandatum-modal"),t.innerHTML=`
       <div class="mandatum-modal-box">
         <div class="mandatum-modal-head">
         <svg id="Layer_1" viewBox="0 0 720 216">
@@ -228,18 +228,18 @@ var L=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         </svg>
         </div>
         <p class="mandatum-modal-intro">If you wait ${this.days} days for the delivery we donate, and you pay less.</p>
-        <img src="${n.product.image.src}" alt="${n.product.title}"/>
-        <h3>${n.product.title}</h3>
+        <img src="${this.shopifyProduct.image.src}" alt="${this.shopifyProduct.title}"/>
+        <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
-          ${n.product.variants.reduce((i,a)=>{let d=`<option value="${a.id}">${a.title} - ${Shopify.formatMoney(a.price,"")}</option>`;return i+d},"")}
+          ${this.shopifyProduct.variants.reduce((n,i)=>{let a=`<option value="${i.id}">${i.title} - ${Shopify.formatMoney(i.price,"")}</option>`;return n+a},"")}
         </select>
-        <p id="product-price-mandatum">$${n.product.variants[0].price}</p>
+        <p id="product-price-mandatum">$${this.shopifyProduct.variants[0].price}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
         </div>
       </div>
-    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),new Shopify.OptionSelectors("product-select-mandatum",{product:n.product,onVariantSelected:(i,a)=>{console.log(i),console.log(a);let d=document.querySelector("#product-price-mandatum"),e=document.querySelector("#mandate_mandate");d.innerText=`${Shopify.formatMoney(i.price,"")}${i.compare_at_price>i.price?` <del>${Shopify.formatMoney(i.compare_at_price,"")}</del>`:""}`,this.shopifyVariant=i,i.available?e.disabled=!1:e.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
+    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),new Shopify.OptionSelectors("product-select-mandatum",{product:this.shopifyProduct,onVariantSelected:(n,i)=>{console.log(n),console.log(i);let a=document.querySelector("#product-price-mandatum"),d=document.querySelector("#mandate_mandate");a.innerText=`${Shopify.formatMoney(n.price,"")}${n.compare_at_price>n.price?` <del>${Shopify.formatMoney(n.compare_at_price,"")}</del>`:""}`,this.shopifyVariant=n,n.available?d.disabled=!1:d.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
       <svg id="mandatum_logo" viewBox="0 0 216 216">
         <style type="text/css">
           .st0{fill:#FFFFFF;}

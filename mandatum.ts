@@ -280,9 +280,9 @@ class MandatumApp {
 
   async addMandatumModal(): Promise<void> {
     const modalContainer: HTMLDivElement = document.createElement("div");
-    const shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
-      json.json()
-    );
+    // const shopifyProduct = await fetch(`${location.href}.json`).then((json) =>
+    //   json.json()
+    // );
 
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
@@ -365,19 +365,19 @@ class MandatumApp {
         <p class="mandatum-modal-intro">If you wait ${
           this.days
         } days for the delivery we donate, and you pay less.</p>
-        <img src="${shopifyProduct.product.image.src}" alt="${
-      shopifyProduct.product.title
+        <img src="${this.shopifyProduct.image.src}" alt="${
+          this.shopifyProduct.title
     }"/>
-        <h3>${shopifyProduct.product.title}</h3>
+        <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
-          ${shopifyProduct.product.variants.reduce((prev, curr) => {
+          ${this.shopifyProduct.variants.reduce((prev, curr) => {
             // @ts-ignore
             const newOption = `<option value="${curr.id}">${curr.title} - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
         <p id="product-price-mandatum">\$${
-          shopifyProduct.product.variants[0].price
+          this.shopifyProduct.variants[0].price
         }</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
@@ -400,7 +400,7 @@ class MandatumApp {
 
     // @ts-ignore
     new Shopify.OptionSelectors("product-select-mandatum", {
-      product: shopifyProduct.product,
+      product: this.shopifyProduct,
       onVariantSelected: (variant, selector) => {
         console.log(variant);
         console.log(selector);
