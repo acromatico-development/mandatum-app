@@ -361,7 +361,7 @@ class MandatumApp {
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${shopifyProduct.product.variants.reduce((prev, curr) => {
             // @ts-ignore
-            const newOption = `<option value="${curr.id}">${curr.title} - ${Shopify.formatMoney(variant.price, "")}</option>`;
+            const newOption = `<option value="${curr.id}">${curr.title} - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>

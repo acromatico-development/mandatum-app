@@ -226,7 +226,7 @@ var q=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         <img src="${n.product.image.src}" alt="${n.product.title}"/>
         <h3>${n.product.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
-          ${n.product.variants.reduce((i,a)=>{let d=`<option value="${a.id}">${a.title} - ${Shopify.formatMoney(variant.price,"")}</option>`;return i+d},"")}
+          ${n.product.variants.reduce((i,a)=>{let d=`<option value="${a.id}">${a.title} - ${Shopify.formatMoney(a.price,"")}</option>`;return i+d},"")}
         </select>
         <p id="product-price-mandatum">$${n.product.variants[0].price}</p>
         <div class="mandatum-modal-buttons">
