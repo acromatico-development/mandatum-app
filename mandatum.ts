@@ -118,7 +118,7 @@ class MandatumApp {
 
       const checkoutURL = newCheckout.onlineStoreUrl;
 
-      console.log(checkoutURL);
+      console.log(newCheckout);
     } catch (error) {
       console.log(error);
     }
