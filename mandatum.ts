@@ -51,6 +51,9 @@ class MandatumApp {
   async addCartMandate(): Promise<any> {
     const productId: string = `gid://shopify/Product/${this.productId}`;
     const variant =  this.shopifyVariant;
+
+    console.log("Shopify Variant", this.shopifyVariant);
+    
     const variantId: string = variant.id;
 
     try {
@@ -73,10 +76,10 @@ class MandatumApp {
       console.log(this.shopifyProduct);
 
       const productData = await this.shopifyClient.product.fetchByHandle(
-        "52-1912-crayola-crayones-so-big-12-ct-grueso"
+        this.shopifyProduct.product.handle
       );
 
-      console.log(productData);
+      console.log("Shopify Product", productData);
 
       let newCheckout = await this.shopifyClient.checkout.create();
 
@@ -99,7 +102,7 @@ class MandatumApp {
         },
       ];
 
-      console.log(lineItemsToAdd);
+      console.log("Shopify Line Item", lineItemsToAdd);
 
       newCheckout = await this.shopifyClient.checkout.addLineItems(
         newCheckout.id,
