@@ -205,6 +205,12 @@ class MandatumApp {
         width: 80%;
       }
 
+      .mandatum-modal #product-select-mandatum {
+        width: 90%;
+        padding: 10px 15px;
+        border: 1px solid purple;
+      }
+
       .mandatum-modal .mandatum-modal-box .mandatum-modal-buttons {
         width: 100%;
         box-sizing: border-box;
@@ -332,7 +338,7 @@ class MandatumApp {
             return prev + newOption;
           }, "")}
         </select>
-        <p>${shopifyProduct.product.variants[0].price}</p>
+        <p id="product-price-mandatum">\$${shopifyProduct.product.variants[0].price}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
@@ -351,6 +357,11 @@ class MandatumApp {
     document.getElementById("mandate_mandate").addEventListener("click", () => {
       this.addCartMandate();
     });
+
+    // @ts-ignore
+    new Shopify.OptionSelectors("product-select-mandatum", { product: shopifyProduct.product, onVariantSelected: function(){
+      console.log("cambio");
+    }});
   }
 
   addMandatumButton(): void {
