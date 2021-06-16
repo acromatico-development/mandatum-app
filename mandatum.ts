@@ -1,6 +1,12 @@
 /// <reference types="url-search-params" />
 import ShopifyClient from "shopify-buy";
 
+function futureDay(days) {
+  var result: Date = new Date();
+  result.setDate(result.getDate() + days);
+  return result.toLocaleDateString("en-US");
+}
+
 const serverUrl: string = "mandatum-app.uc.r.appspot.com";
 class MandatumApp {
   discount: number;
@@ -232,6 +238,15 @@ class MandatumApp {
         width: 100%;
       }
 
+      .mandatum-modal #product-price-mandatum {
+        font-weight: bold;
+
+      }
+
+      .mandatum-modal #product-price-mandatum span {
+        color: purple;
+      }
+
       .mandatum-modal .single-option-selector {
         opacity: 1;
         width: 90%;
@@ -381,13 +396,14 @@ class MandatumApp {
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum">Price: <s>${
+        <p id="product-price-mandatum">Price | <s>${
           // @ts-ignore
           Shopify.formatMoney(this.shopifyProduct.variants[0].price)
-        }</s> ${
+        }</s> <span>${
           // @ts-ignore
           Shopify.formatMoney(parseFloat(this.shopifyProduct.variants[0].price) * (1 - (parseFloat(this.discount) / 100)))
-        }</p>
+        }</span></p>
+        <p id="product-price-mandatum">Delivery Date: ${futureDay(this.days)}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
@@ -430,7 +446,7 @@ class MandatumApp {
 
         if (selector.selectors[0].values[0] === "Default Title") {
           selector.selectors.forEach((selecto) => {
-            selecto.style.display = "none";
+            selecto.element.style.display = "none";
           });
         }
 
@@ -439,13 +455,14 @@ class MandatumApp {
         );
         const mandateButton: HTMLButtonElement =
           document.querySelector("#mandate_mandate");
-        // @ts-ignore
-        precioMandatum.innerText = `${Shopify.formatMoney(variant.price, "")}${
+        
+        precioMandatum.innerText = `${
           variant.compare_at_price > variant.price
             ? // @ts-ignore
               ` <del>${Shopify.formatMoney(variant.compare_at_price, "")}</del>`
             : ""
-        }`;
+          // @ts-ignore
+        } <span>${Shopify.formatMoney(variant.price, "")}</span>`;
 
         this.shopifyVariant = variant;
 
