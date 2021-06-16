@@ -1,7 +1,7 @@
 /// <reference types="url-search-params" />
 import ShopifyClient from "shopify-buy";
 
-const serverUrl: string = "e373123d9339.ngrok.io";
+const serverUrl: string = "mandatum-app.uc.r.appspot.com";
 class MandatumApp {
   discount: number;
   days: number;
