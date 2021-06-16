@@ -238,12 +238,12 @@ class MandatumApp {
         width: 100%;
       }
 
-      .mandatum-modal #product-price-mandatum {
+      .mandatum-modal .product-price-mandatum {
         font-weight: bold;
 
       }
 
-      .mandatum-modal #product-price-mandatum span {
+      .mandatum-modal .product-price-mandatum span {
         color: purple;
       }
 
@@ -396,14 +396,14 @@ class MandatumApp {
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum">Price | <s>${
+        <p id="product-price-mandatum" class="product-price-mandatum">Price | <s>${
           // @ts-ignore
           Shopify.formatMoney(this.shopifyProduct.variants[0].price)
         }</s> <span>${
           // @ts-ignore
           Shopify.formatMoney(parseFloat(this.shopifyProduct.variants[0].price) * (1 - (parseFloat(this.discount) / 100)))
         }</span></p>
-        <p id="product-price-mandatum">Delivery Date: ${futureDay(this.days)}</p>
+        <p class="product-price-mandatum">Delivery Date: ${futureDay(this.days)}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
