@@ -232,6 +232,7 @@ class MandatumApp {
 
       .mandatum-modal .mandatum-modal-box img {
         width: 80%;
+        margin: 1rem auto;
       }
 
       .mandatum-modal .selector-wrapper {
@@ -397,7 +398,7 @@ class MandatumApp {
         <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${Shopify.formatMoney(
           this.shopifyProduct.variants[0].price
         )}</del> <span>${Shopify.formatMoney(
-      parseFloat(this.shopifyProduct.variants[0].price) *
+      this.shopifyProduct.variants[0].price *
         (1 - this.discount / 100)
     )}</span></p>
         <p class="product-price-mandatum">Delivery Date: ${futureDay(
