@@ -223,11 +223,11 @@ class MandatumApp {
       }
 
       .mandatum-modal .mandatum-modal-box p {
-        padding: 20px;
+        padding: 0;
         text-align: center;
         box-sizing: border-box;
         width: 100%;
-        argin: 0;
+        margin: 0;
       }
 
       .mandatum-modal .mandatum-modal-box img {
@@ -388,22 +388,21 @@ class MandatumApp {
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((prev, curr) => {
-            // @ts-ignore
             const newOption = `<option value="${curr.id}">${
               curr.title
-              // @ts-ignore
             } - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum" class="product-price-mandatum">Price | <s>${
-          // @ts-ignore
-          Shopify.formatMoney(this.shopifyProduct.variants[0].price)
-        }</s> <span>${
-          // @ts-ignore
-          Shopify.formatMoney(parseFloat(this.shopifyProduct.variants[0].price) * (1 - (parseFloat(this.discount) / 100)))
-        }</span></p>
-        <p class="product-price-mandatum">Delivery Date: ${futureDay(this.days)}</p>
+        <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${Shopify.formatMoney(
+          this.shopifyProduct.variants[0].price
+        )}</del> <span>${Shopify.formatMoney(
+      parseFloat(this.shopifyProduct.variants[0].price) *
+        (1 - this.discount / 100)
+    )}</span></p>
+        <p class="product-price-mandatum">Delivery Date: ${futureDay(
+          this.days
+        )}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
@@ -455,7 +454,7 @@ class MandatumApp {
         );
         const mandateButton: HTMLButtonElement =
           document.querySelector("#mandate_mandate");
-        
+
         precioMandatum.innerText = `${
           variant.compare_at_price > variant.price
             ? // @ts-ignore

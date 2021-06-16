@@ -92,11 +92,11 @@ var L=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
       }
 
       .mandatum-modal .mandatum-modal-box p {
-        padding: 20px;
+        padding: 0;
         text-align: center;
         box-sizing: border-box;
         width: 100%;
-        argin: 0;
+        margin: 0;
       }
 
       .mandatum-modal .mandatum-modal-box img {
@@ -242,7 +242,7 @@ var L=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((a,d)=>{let e=`<option value="${d.id}">${d.title} - ${Shopify.formatMoney(d.price,"")}</option>`;return a+e},"")}
         </select>
-        <p id="product-price-mandatum" class="product-price-mandatum">Price | <s>${Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</s> <span>${Shopify.formatMoney(parseFloat(this.shopifyProduct.variants[0].price)*(1-parseFloat(this.discount)/100))}</span></p>
+        <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(parseFloat(this.shopifyProduct.variants[0].price)*(1-this.discount/100))}</span></p>
         <p class="product-price-mandatum">Delivery Date: ${mn(this.days)}</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
