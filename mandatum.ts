@@ -93,6 +93,7 @@ class MandatumApp {
           quantity: 1,
           customAttributes: [
             { key: "Mandatum Discount", value: `${this.discount}%` },
+            { key: "Mandatum Delivery Days", value: `${this.days}%` },
           ],
         },
       ];
@@ -375,13 +376,17 @@ class MandatumApp {
             // @ts-ignore
             const newOption = `<option value="${curr.id}">${
               curr.title
-            // @ts-ignore
+              // @ts-ignore
             } - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum">\$${
-          this.shopifyProduct.variants[0].price
+        <p id="product-price-mandatum">Price: <s>${
+          // @ts-ignore
+          Shopify.formatMoney(this.shopifyProduct.variants[0].price)
+        }</s> ${
+          // @ts-ignore
+          Shopify.formatMoney(parseFloat(this.shopifyProduct.variants[0].price) * (1 - (parseFloat(this.discount) / 100)))
         }</p>
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
@@ -422,6 +427,13 @@ class MandatumApp {
       onVariantSelected: (variant, selector) => {
         console.log(variant);
         console.log(selector);
+
+        if (selector.selectors[0].values[0] === "Default Title") {
+          selector.selectors.forEach((selecto) => {
+            selecto.style.display = "none";
+          });
+        }
+
         const precioMandatum: HTMLParagraphElement = document.querySelector(
           "#product-price-mandatum"
         );
