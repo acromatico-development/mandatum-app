@@ -7,6 +7,15 @@ function futureDay(days) {
   return result.toLocaleDateString("en-US");
 }
 
+function formatMoney(number: number, currency: string): string {
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency
+  });
+
+  return formatter.format(number);
+}
+
 const serverUrl: string = "mandatum-app.uc.r.appspot.com";
 class MandatumApp {
   discount: number;
@@ -19,6 +28,7 @@ class MandatumApp {
   shopifyClient;
   shopifyProduct;
   shopifyVariant;
+  currency: string;
 
   constructor(
     container: HTMLElement,
@@ -36,6 +46,7 @@ class MandatumApp {
     this.days = dias;
     this.productId = productId;
     this.shopifyProduct = shopifyProduct;
+    this.currency = shopifyProduct.variants[0].priceV2.currencyCode;
 
     console.log(shop, storefrontToken);
 
@@ -389,12 +400,12 @@ class MandatumApp {
           ${this.shopifyProduct.variants.reduce((prev, curr) => {
             const newOption = `<option value="${curr.id}">${
               curr.title
-            } - ${Shopify.formatMoney(curr.price, "")}</option>`;
+            } - ${formatMoney(curr.price, this.currency)}</option>`;
             return prev + newOption;
           }, "")}
         </select>
         <p id="product-price-mandatum" class="product-price-mandatum">
-          Price | <del>${Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(this.shopifyProduct.variants[0].price * (1 - this.discount / 100) * 100)}</span>
+          Price | <del>${formatMoney(this.shopifyProduct.variants[0].price, this.currency)}</del> <span>${formatMoney(this.shopifyProduct.variants[0].price * (1 - this.discount / 100) * 100, this.currency)}</span>
         </p>
         <p class="product-price-mandatum">Delivery Date: ${futureDay(
           this.days
