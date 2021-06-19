@@ -174,6 +174,7 @@ class MandatumApp {
         display: none;
         justify-content: center;
         align-items: center;
+        z-index: 100000;
       }
 
       .mandatum-modal.open {
@@ -380,27 +381,25 @@ class MandatumApp {
           </g>
         </svg>
         </div>
-        <p class="mandatum-modal-intro">If you wait ${
-          this.days
-        } days for the delivery we donate, and you pay less.</p>
         <img src="${this.shopifyProduct.images[0].src}" alt="${
-      this.shopifyProduct.title
-    }"/>
+          this.shopifyProduct.title
+        }"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((prev, curr) => {
             const newOption = `<option value="${curr.id}">${
               curr.title
+              // @ts-ignore
             } - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${Shopify.formatMoney(
-          this.shopifyProduct.variants[0].price
-        )}</del> <span>${Shopify.formatMoney(
-      this.shopifyProduct.variants[0].price *
-        (1 - this.discount / 100)
-    )}</span></p>
+        <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${
+          // @ts-ignore
+          Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(
+            (this.shopifyProduct.variants[0].price * (1 - this.discount / 100)) * 100
+          )}</span>
+        </p>
         <p class="product-price-mandatum">Delivery Date: ${futureDay(
           this.days
         )}</p>
