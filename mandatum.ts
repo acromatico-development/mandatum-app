@@ -382,23 +382,19 @@ class MandatumApp {
         </svg>
         </div>
         <img src="${this.shopifyProduct.images[0].src}" alt="${
-          this.shopifyProduct.title
-        }"/>
+      this.shopifyProduct.title
+    }"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((prev, curr) => {
             const newOption = `<option value="${curr.id}">${
               curr.title
-              // @ts-ignore
             } - ${Shopify.formatMoney(curr.price, "")}</option>`;
             return prev + newOption;
           }, "")}
         </select>
-        <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${
-          // @ts-ignore
-          Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(
-            (this.shopifyProduct.variants[0].price * (1 - this.discount / 100)) * 100
-          )}</span>
+        <p id="product-price-mandatum" class="product-price-mandatum">
+          Price | <del>${Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(this.shopifyProduct.variants[0].price * (1 - this.discount / 100) * 100)}</span>
         </p>
         <p class="product-price-mandatum">Delivery Date: ${futureDay(
           this.days

@@ -243,7 +243,8 @@ var L=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((a,d)=>{let e=`<option value="${d.id}">${d.title} - ${Shopify.formatMoney(d.price,"")}</option>`;return a+e},"")}
         </select>
-        <p id="product-price-mandatum" class="product-price-mandatum"> Price | <del>${Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(this.shopifyProduct.variants[0].price*(1-this.discount/100)*100)}</span>
+        <p id="product-price-mandatum" class="product-price-mandatum">
+          Price | <del>${Shopify.formatMoney(this.shopifyProduct.variants[0].price)}</del> <span>${Shopify.formatMoney(this.shopifyProduct.variants[0].price*(1-this.discount/100)*100)}</span>
         </p>
         <p class="product-price-mandatum">Delivery Date: ${mn(this.days)}</p>
         <div class="mandatum-modal-buttons">
