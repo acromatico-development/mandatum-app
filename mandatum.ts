@@ -541,9 +541,7 @@ async function main(): Promise<MandatumApp> {
     scriptShopify = document.querySelector("script[src*='mandatum']");
     queryString = new URLSearchParams(scriptShopify.src.split("?")[1]);
     shopName = queryString.get("shop");
-    productContainer = document.getElementById(
-      "shopify-section-product-template"
-    );
+    productContainer = document.querySelector("body");
     shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then(
       (json) => json.json()
     );
