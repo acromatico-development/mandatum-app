@@ -405,7 +405,7 @@ class MandatumApp {
           }, "")}
         </select>
         <p id="product-price-mandatum" class="product-price-mandatum">
-          Price | <del>${formatMoney(this.shopifyProduct.variants[0].price, this.currency)}</del> <span>${formatMoney(this.shopifyProduct.variants[0].price * (1 - this.discount / 100) * 100, this.currency)}</span>
+          Price | <s>${formatMoney(this.shopifyProduct.variants[0].price, this.currency)}</s> <span>${formatMoney(this.shopifyProduct.variants[0].price * (1 - this.discount / 100), this.currency)}</span>
         </p>
         <p class="product-price-mandatum">Delivery Date: ${futureDay(
           this.days
@@ -462,13 +462,12 @@ class MandatumApp {
         const mandateButton: HTMLButtonElement =
           document.querySelector("#mandate_mandate");
 
-        precioMandatum.innerText = `${
+        precioMandatum.innerHTML = `${
           variant.compare_at_price > variant.price
-            ? // @ts-ignore
-              ` <del>${Shopify.formatMoney(variant.compare_at_price, "")}</del>`
+            ?
+              ` <s>${formatMoney(variant.compare_at_price, this.currency)}</s>`
             : ""
-          // @ts-ignore
-        } <span>${Shopify.formatMoney(variant.price, "")}</span>`;
+        } <span>${formatMoney(variant.price, this.currency)}</span>`;
 
         this.shopifyVariant = variant;
 
