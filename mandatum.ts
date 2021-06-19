@@ -110,7 +110,7 @@ class MandatumApp {
           quantity: 1,
           customAttributes: [
             { key: "Mandatum Discount", value: `${this.discount}%` },
-            { key: "Mandatum Delivery Days", value: `${this.days}%` },
+            { key: "Mandatum Delivery Days", value: `${this.days} days` },
           ],
         },
       ];
@@ -243,7 +243,7 @@ class MandatumApp {
       }
 
       .mandatum-modal .mandatum-modal-box img {
-        width: 80%;
+        width: 60%;
         margin: 1rem auto;
       }
 
