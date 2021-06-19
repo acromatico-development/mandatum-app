@@ -462,12 +462,7 @@ class MandatumApp {
         const mandateButton: HTMLButtonElement =
           document.querySelector("#mandate_mandate");
 
-        precioMandatum.innerHTML = `${
-          variant.compare_at_price > variant.price
-            ?
-              ` <s>${formatMoney(variant.compare_at_price, this.currency)}</s>`
-            : ""
-        } <span>${formatMoney(variant.price, this.currency)}</span>`;
+        precioMandatum.innerHTML = `Price | <s>${formatMoney(variant.price, this.currency)}</s> <span>${formatMoney(variant.price * (1 - this.discount / 100), this.currency)}</span>`;
 
         this.shopifyVariant = variant;
 
