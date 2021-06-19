@@ -4,7 +4,11 @@ import ShopifyClient from "shopify-buy";
 function futureDay(days) {
   var result: Date = new Date();
   result.setDate(result.getDate() + days);
-  return result.toLocaleDateString("en-US");
+  return result.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "2-digit"
+  });
 }
 
 function formatMoney(number: number, currency: string): string {
