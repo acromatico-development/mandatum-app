@@ -183,6 +183,10 @@ class MandatumApp {
         color: #541FA6;
       }
 
+      .mandatum-modal li {
+        list-style: inherit;
+      }
+
       .mandatum-modal {
         position: fixed;
         top: 0;
@@ -227,7 +231,7 @@ class MandatumApp {
         justify-content: space-between;
         align-items: center;
         border-radius: 10px;
-        overflow-y: scroll;
+        overflow: hidden;
         padding: 20px 15px;
       }
 
@@ -626,9 +630,9 @@ class MandatumApp {
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
         </div>
-        <div class="mandatum-info-modal">
+        <div id="mandate_info_box" class="mandatum-info-modal">
           <div class="mandatum-info-box">
-            <svg class="info-icon" viewBox="0 0 20 20" fill="none">
+            <svg id="mandate_info" class="info-icon" viewBox="0 0 20 20" fill="none">
               <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M10 13.3333V10" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -646,7 +650,7 @@ class MandatumApp {
               </li>
             </ol>
             <div class="mandatum-modal-buttons">
-              <button id="mandate_mandate">Got it</button>
+              <button id="mandate_gotit">Got it</button>
             </div>
           </div>
         </div>
@@ -663,6 +667,18 @@ class MandatumApp {
 
     document.getElementById("mandate_mandate").addEventListener("click", () => {
       this.addCartMandate();
+    });
+
+    document.getElementById("mandate_info").addEventListener("click", () => {
+      const modalInfo = document.getElementById("mandate_info_box");
+
+      modalInfo.classList.add("open");
+    });
+
+    document.getElementById("mandate_gotit").addEventListener("click", () => {
+      const modalInfo = document.getElementById("mandate_info_box");
+
+      modalInfo.classList.remove("open");
     });
 
     const fixedProduct = {

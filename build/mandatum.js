@@ -37,6 +37,10 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         color: #541FA6;
       }
 
+      .mandatum-modal li {
+        list-style: inherit;
+      }
+
       .mandatum-modal {
         position: fixed;
         top: 0;
@@ -81,7 +85,7 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         justify-content: space-between;
         align-items: center;
         border-radius: 10px;
-        overflow-y: scroll;
+        overflow: hidden;
         padding: 20px 15px;
       }
 
@@ -459,9 +463,9 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
         </div>
-        <div class="mandatum-info-modal">
+        <div id="mandate_info_box" class="mandatum-info-modal">
           <div class="mandatum-info-box">
-            <svg class="info-icon" viewBox="0 0 20 20" fill="none">
+            <svg id="mandate_info" class="info-icon" viewBox="0 0 20 20" fill="none">
               <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M10 13.3333V10" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -477,12 +481,12 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
               </li>
             </ol>
             <div class="mandatum-modal-buttons">
-              <button id="mandate_mandate">Got it</button>
+              <button id="mandate_gotit">Got it</button>
             </div>
           </div>
         </div>
       </div>
-    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()});let i={...n.product,variants:[...n.product.variants.map(a=>({...a,available:this.shopifyProduct.variants.find(d=>d.title===a.title).available}))]};console.log(i),new Shopify.OptionSelectors("product-select-mandatum",{product:i,onVariantSelected:(a,d)=>{console.log(a),console.log(d),d.selectors[0].values[0]==="Default Title"&&d.selectors.forEach(u=>{u.element.style.display="none"});let e=document.querySelector("#product-price-mandatum"),c=document.querySelector("#mandate_mandate");e.innerHTML=`Price | <s>${C(a.price,this.currency)}</s> <span>${C(a.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=a,a.available?c.disabled=!1:c.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
+    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),document.getElementById("mandate_info").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.add("open")}),document.getElementById("mandate_gotit").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.remove("open")});let i={...n.product,variants:[...n.product.variants.map(a=>({...a,available:this.shopifyProduct.variants.find(d=>d.title===a.title).available}))]};console.log(i),new Shopify.OptionSelectors("product-select-mandatum",{product:i,onVariantSelected:(a,d)=>{console.log(a),console.log(d),d.selectors[0].values[0]==="Default Title"&&d.selectors.forEach(u=>{u.element.style.display="none"});let e=document.querySelector("#product-price-mandatum"),c=document.querySelector("#mandate_mandate");e.innerHTML=`Price | <s>${C(a.price,this.currency)}</s> <span>${C(a.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=a,a.available?c.disabled=!1:c.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
       <svg id="mandatum_logo" viewBox="0 0 216 216">
         <style type="text/css">
           .st0{fill:#FFFFFF;}
