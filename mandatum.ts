@@ -155,7 +155,7 @@ class MandatumApp {
         left: 50%;
         bottom: 2rem;
         transform: translate3d(-50%, 0, 0);
-        background-color: purple;
+        background-color: #541FA6;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -179,6 +179,10 @@ class MandatumApp {
         width: 50px;
       }
 
+      .mandatum-modal .color {
+        color: #541FA6;
+      }
+
       .mandatum-modal {
         position: fixed;
         top: 0;
@@ -196,6 +200,49 @@ class MandatumApp {
         display: flex;
       }
 
+      .mandatum-modal .mandatum-info-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000000;
+      }
+
+      .mandatum-modal .mandatum-info-modal.open {
+        display: flex;
+      }
+
+      .mandatum-modal .mandatum-info-modal .mandatum-info-box {
+        width: 90%;
+        max-width: 400px;
+        max-height: 90%;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 10px;
+        overflow-y: scroll;
+        padding: 20px 15px;
+      }
+
+      .mandatum-modal .mandatum-info-modal .mandatum-info-box svg {
+        width: 30px;
+      }
+      
+      .mandatum-modal .mandatum-info-modal .mandatum-info-box .mandatum-modal-buttons {
+        justify-content: center;
+        margin: 20px;
+        padding: 0;
+        box-sizing: border-box;
+        width: 90%;
+      }
+
       .mandatum-modal .mandatum-modal-box {
         width: 90%;
         max-width: 400px;
@@ -211,7 +258,7 @@ class MandatumApp {
 
       .mandatum-modal .mandatum-modal-box .mandatum-modal-head {
         width: 100%;
-        background-color: purple;
+        background-color: #541FA6;
         color: white;
         box-sizing: border-box;
         border-radius: 10px 10px 0 0;
@@ -260,7 +307,7 @@ class MandatumApp {
       }
 
       .mandatum-modal .product-price-mandatum span {
-        color: purple;
+        color: #541FA6;
       }
 
       .mandatum-modal .single-option-selector {
@@ -268,7 +315,7 @@ class MandatumApp {
         width: 90%;
         padding: 10px 15px;
         display: block;
-        border: 1px solid purple;
+        border: 1px solid #541FA6;
         margin: 0 auto;
       }
 
@@ -287,7 +334,7 @@ class MandatumApp {
         padding: 20px 15px;
         border-radius: 10px;
         cursor: pointer;
-        background-color: purple;
+        background-color: #541FA6;
         color: white;
         border: none;
       }
@@ -343,6 +390,25 @@ class MandatumApp {
       }
 
       @media (max-width: 600px) {
+
+        .mandatum-modal .mandatum-modal-box img {
+          width: 40%;
+          margin: 1rem auto 0;
+        }
+
+        .mandatum-modal .mandatum-modal-box {
+          width: 100%;
+          max-width: 100%;
+          min-height: 100%;
+          background-color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          border-radius: 0px;
+          overflow-y: scroll;
+        }
+
         .mandatum-button {
           padding: 0;
         }
@@ -559,6 +625,30 @@ class MandatumApp {
         <div class="mandatum-modal-buttons">
           <button id="mandate_cancel">Cancel</button>
           <button id="mandate_mandate">Mandate</button>
+        </div>
+        <div class="mandatum-info-modal">
+          <div class="mandatum-info-box">
+            <svg class="info-icon" viewBox="0 0 20 20" fill="none">
+              <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 13.3333V10" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <ol>
+              <li>To be delivered by <span class="color">${futureDay(
+                this.days
+              )}</span></li>
+              <li>
+                Just click and make a <span class="color">mandate</span>
+                <ul>
+                  <li>We apply a <span class="color">${formatMoney(this.shopifyProduct.variants[0].price * (this.discount / 100), this.currency)} private discount</span> in the checkout process.</li>
+                  <li>We <span class="color">donate ${formatMoney(this.shopifyProduct.variants[0].price * (this.discount / 100), this.currency)}</span> to protect forests and oceans at no cost for you.</li>
+                </ul>
+              </li>
+            </ol>
+            <div class="mandatum-modal-buttons">
+              <button id="mandate_mandate">Got it</button>
+            </div>
+          </div>
         </div>
       </div>
     `;
