@@ -58,6 +58,11 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         display: flex;
       }
 
+      .mandatum-modal ol, .mandatum-modal ul {
+        margin: revert;
+        padding: 0 1rem;
+      }
+
       .mandatum-modal .mandatum-info-modal {
         position: fixed;
         top: 0;
