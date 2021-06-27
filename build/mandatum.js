@@ -418,7 +418,7 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
                 />
               </g>
             </svg>
-            <p style="color: #767171">${C(this.shopifyProduct.variants[0].price*(this.discount/100),this.currency)}</p>
+            <p style="color: #767171">Discount:<br/>${C(this.shopifyProduct.variants[0].price*(this.discount/100),this.currency)}</p>
           </div>
           <div class="svg-badge">
             <svg class="svg-badge" viewBox="0 0 509 509">
@@ -451,9 +451,9 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
                 />
               </g>
             </svg>
-            <p style="color: #548235">${C(this.shopifyProduct.variants[0].price*(this.discount/100),this.currency)}</p>
+            <p style="color: #548235">Donation:<br/>${C(this.shopifyProduct.variants[0].price*(this.discount/100),this.currency)}</p>
           </div>
-          <svg class="info-icon" viewBox="0 0 20 20" fill="none">
+          <svg class="info-icon" id="mandate_info" viewBox="0 0 20 20" fill="none">
             <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M10 13.3333V10" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -465,7 +465,7 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         </div>
         <div id="mandate_info_box" class="mandatum-info-modal">
           <div class="mandatum-info-box">
-            <svg id="mandate_info" class="info-icon" viewBox="0 0 20 20" fill="none">
+            <svg class="info-icon" viewBox="0 0 20 20" fill="none">
               <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M10 13.3333V10" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
