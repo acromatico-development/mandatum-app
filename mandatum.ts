@@ -386,7 +386,7 @@ class MandatumApp {
         padding: 0;
         position: absolute;
         text-align: center;
-        bottom: 30%;
+        bottom: 15%;
         font-weight: bold;
       }
 

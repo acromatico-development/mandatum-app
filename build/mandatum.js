@@ -240,7 +240,7 @@ var R=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(r){re
         padding: 0;
         position: absolute;
         text-align: center;
-        bottom: 30%;
+        bottom: 15%;
         font-weight: bold;
       }
 
