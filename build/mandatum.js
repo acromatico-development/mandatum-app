@@ -352,7 +352,7 @@ function g(n){var t=new Date;return t.setDate(t.getDate()+n),t.toLocaleDateStrin
           </g>
         </svg>
         </div>
-        <img src="${this.shopifyProduct.images[0].src}" alt="${this.shopifyProduct.title}"/>
+        <img src="${this.shopifyProduct.images.edges[0].node.src}" alt="${this.shopifyProduct.title}"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
           ${this.shopifyProduct.variants.reduce((a,o)=>{let d=`<option value="${o.id}">${o.title} - ${c(o.price,this.currency)}</option>`;return a+d},"")}
@@ -486,7 +486,7 @@ function g(n){var t=new Date;return t.setDate(t.getDate()+n),t.toLocaleDateStrin
           </div>
         </div>
       </div>
-    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),document.getElementById("mandate_info").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.add("open")}),document.getElementById("mandate_gotit").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.remove("open")});let s={...e.product,variants:[...e.product.variants.map(a=>({...a,available:this.shopifyProduct.variants.find(o=>o.title===a.title).available}))]};console.log(s),new Shopify.OptionSelectors("product-select-mandatum",{product:s,onVariantSelected:(a,o)=>{console.log(a),console.log(o),o.selectors[0].values[0]==="Default Title"&&o.selectors.forEach(m=>{m.element.style.display="none"});let d=document.querySelector("#product-price-mandatum"),i=document.querySelector("#mandate_mandate");d.innerHTML=`Price | <s>${c(a.price,this.currency)}</s> <span>${c(a.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=a,a.available?i.disabled=!1:i.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
+    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),document.getElementById("mandate_info").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.add("open")}),document.getElementById("mandate_gotit").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.remove("open")});let s={...e.product,variants:[...e.product.variants.map(a=>({...a,available:this.shopifyProduct.variants.edges.find(o=>o.node.title===a.title).availableForSale}))]};console.log(s),new Shopify.OptionSelectors("product-select-mandatum",{product:s,onVariantSelected:(a,o)=>{console.log(a),console.log(o),o.selectors[0].values[0]==="Default Title"&&o.selectors.forEach(m=>{m.element.style.display="none"});let d=document.querySelector("#product-price-mandatum"),i=document.querySelector("#mandate_mandate");d.innerHTML=`Price | <s>${c(a.price,this.currency)}</s> <span>${c(a.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=a,a.available?i.disabled=!1:i.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
       <svg id="mandatum_logo" viewBox="0 0 216 216">
         <style type="text/css">
           .st0{fill:#FFFFFF;}

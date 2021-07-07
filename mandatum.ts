@@ -504,7 +504,7 @@ class MandatumApp {
           </g>
         </svg>
         </div>
-        <img src="${this.shopifyProduct.images[0].src}" alt="${
+        <img src="${this.shopifyProduct.images.edges[0].node.src}" alt="${
       this.shopifyProduct.title
     }"/>
         <h3>${this.shopifyProduct.title}</h3>
@@ -680,9 +680,9 @@ class MandatumApp {
       variants: [
         ...shopifyProduct.product.variants.map((varian) => ({
           ...varian,
-          available: this.shopifyProduct.variants.find(
-            (ddd) => ddd.title === varian.title
-          ).available,
+          available: this.shopifyProduct.variants.edges.find(
+            (ddd) => ddd.node.title === varian.title
+          ).availableForSale,
         })),
       ],
     };
