@@ -84,8 +84,8 @@ class MandatumApp {
 
       console.log("Shopify Product", this.shopifyProduct);
 
-      const variantIdShopify = this.shopifyProduct.variants.find(
-        (variant) => variant.title === this.shopifyVariant.title
+      const variantIdShopify = this.shopifyProduct.variants.edges.find(
+        (variant) => variant.node.title === this.shopifyVariant.title
       ).id;
 
       const lineItems = [
@@ -509,15 +509,15 @@ class MandatumApp {
     }"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
-          ${this.shopifyProduct.variants.reduce((prev, curr) => {
-            const newOption = `<option value="${curr.id}">${
-              curr.title
-            } - ${formatMoney(curr.price, this.currency)}</option>`;
+          ${this.shopifyProduct.variants.edges.reduce((prev, curr) => {
+            const newOption = `<option value="${curr.node.id}">${
+              curr.node.title
+            } - ${formatMoney(curr.node.price, this.currency)}</option>`;
             return prev + newOption;
           }, "")}
         </select>
         <p id="product-price-mandatum" class="product-price-mandatum">
-          Price | <s>${formatMoney(this.shopifyProduct.variants[0].price, this.currency)}</s> <span>${formatMoney(this.shopifyProduct.variants[0].price * (1 - this.discount / 100), this.currency)}</span>
+          Price | <s>${formatMoney(this.shopifyProduct.variants.edges[0].node.price, this.currency)}</s> <span>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (1 - this.discount / 100), this.currency)}</span>
         </p>
         <p class="product-price-mandatum">Delivery Date: ${futureDay(
           this.days
@@ -579,7 +579,7 @@ class MandatumApp {
                 />
               </g>
             </svg>
-            <p style="color: #767171">Discount:<br/>${formatMoney(this.shopifyProduct.variants[0].price * (this.discount / 100), this.currency)}</p>
+            <p style="color: #767171">Discount:<br/>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</p>
           </div>
           <div class="svg-badge">
             <svg class="svg-badge" viewBox="0 0 509 509">
@@ -612,7 +612,7 @@ class MandatumApp {
                 />
               </g>
             </svg>
-            <p style="color: #548235">Donation:<br/>${formatMoney(this.shopifyProduct.variants[0].price * (this.discount / 100), this.currency)}</p>
+            <p style="color: #548235">Donation:<br/>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</p>
           </div>
           <svg class="info-icon" id="mandate_info" viewBox="0 0 20 20" fill="none">
             <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -638,8 +638,8 @@ class MandatumApp {
               <li>
                 Just click and make a <span class="color">mandate</span>
                 <ul>
-                  <li>We apply a <span class="color">${formatMoney(this.shopifyProduct.variants[0].price * (this.discount / 100), this.currency)} private discount</span> in the checkout process.</li>
-                  <li>We <span class="color">donate ${formatMoney(this.shopifyProduct.variants[0].price * (this.discount / 100), this.currency)}</span> to protect forests and oceans at no cost for you.</li>
+                  <li>We apply a <span class="color">${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)} private discount</span> in the checkout process.</li>
+                  <li>We <span class="color">donate ${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</span> to protect forests and oceans at no cost for you.</li>
                 </ul>
               </li>
             </ol>
