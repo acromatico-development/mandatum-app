@@ -29,7 +29,6 @@ class MandatumApp {
   loading: boolean;
   shop: string;
   productId: number;
-  shopifyClient;
   shopifyProduct;
   shopifyVariant;
   currency: string;
@@ -40,7 +39,6 @@ class MandatumApp {
     descuento: number,
     dias: number,
     productId: number,
-    storefrontToken: string,
     shopifyProduct
   ) {
     this.container = container;
@@ -51,13 +49,6 @@ class MandatumApp {
     this.productId = productId;
     this.shopifyProduct = shopifyProduct;
     this.currency = shopifyProduct.variants[0].priceV2.currencyCode;
-
-    console.log(shop, storefrontToken);
-
-    this.shopifyClient = ShopifyClient.buildClient({
-      domain: shop,
-      storefrontAccessToken: storefrontToken,
-    });
   }
 
   async init(): Promise<Boolean> {
@@ -93,22 +84,11 @@ class MandatumApp {
 
       console.log("Shopify Product", this.shopifyProduct);
 
-      let newCheckout = await this.shopifyClient.checkout.create();
-
-      const input = {
-        customAttributes: [{ key: "Mandatum Order", value: "true" }],
-      };
-
-      newCheckout = await this.shopifyClient.checkout.updateAttributes(
-        newCheckout.id,
-        input
-      );
-
       const variantIdShopify = this.shopifyProduct.variants.find(
         (variant) => variant.title === this.shopifyVariant.title
       ).id;
 
-      const lineItemsToAdd = [
+      const lineItems = [
         {
           variantId: variantIdShopify,
           quantity: 1,
@@ -118,24 +98,33 @@ class MandatumApp {
           ],
         },
       ];
+      const customAttributes = [{ key: "Mandatum Order", value: "true" }];
+      const shippingLine = {
+        price: "10.00",
+        shippingRateHandle: "mandatum-shipping",
+        title: "Mandatum Shipping"
+      };
 
-      console.log("Shopify Line Item", lineItemsToAdd);
+      const checkoutUrlBack = await fetch(
+        `https://${serverUrl}/pay?shop=${this.shop}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lineItems,
+            customAttributes, 
+            shippingLine
+          }),
+        }
+      ).then((json) => json.json());
 
-      newCheckout = await this.shopifyClient.checkout.addLineItems(
-        newCheckout.id,
-        lineItemsToAdd
-      );
-
-      newCheckout = await this.shopifyClient.checkout.addDiscount(
-        newCheckout.id,
-        discountCode
-      );
-
-      let checkoutURL = newCheckout.webUrl;
+      let checkoutURL = checkoutUrlBack.draftOrder.invoiceUrl;
 
       console.log(checkoutURL);
 
-      location.assign(checkoutURL);
+      // location.assign(checkoutURL);
     } catch (error) {
       console.log(error);
     }
@@ -818,15 +807,7 @@ async function main(): Promise<MandatumApp> {
   }
 
   if (isMandatum && isProduct) {
-    const storefrontToken: string = productInfo.storeFrontToken.accessToken;
-    const tempClient = ShopifyClient.buildClient({
-      domain: shopName,
-      storefrontAccessToken: storefrontToken,
-    });
-
-    const newShopProd = await tempClient.product.fetchByHandle(
-      shopifyProduct.product.handle
-    );
+    const newShopProd = productInfo.newProduct;
 
     console.log("product", newShopProd);
 
@@ -836,7 +817,6 @@ async function main(): Promise<MandatumApp> {
       descuento,
       dias,
       productID,
-      storefrontToken,
       newShopProd
     );
 
