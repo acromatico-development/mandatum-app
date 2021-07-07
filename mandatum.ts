@@ -47,8 +47,8 @@ class MandatumApp {
     this.discount = descuento;
     this.days = dias;
     this.productId = productId;
-    this.shopifyProduct = shopifyProduct;
-    this.currency = shopifyProduct.variants[0].priceV2.currencyCode;
+    this.shopifyProduct = shopifyProduct.product;
+    this.currency = shopifyProduct.shop.currencyCode;
   }
 
   async init(): Promise<Boolean> {
