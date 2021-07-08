@@ -1,5 +1,4 @@
 /// <reference types="url-search-params" />
-import ShopifyClient from "shopify-buy";
 
 function futureDay(days) {
   var result: Date = new Date();
