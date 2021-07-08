@@ -120,6 +120,8 @@ class MandatumApp {
         }
       ).then((json) => json.json());
 
+      console.log(checkoutUrlBack);
+
       let checkoutURL = checkoutUrlBack.draftOrder.invoiceUrl;
 
       console.log(checkoutURL);
