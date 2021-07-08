@@ -675,6 +675,9 @@ class MandatumApp {
       modalInfo.classList.remove("open");
     });
 
+    console.log("front: ", shopifyProduct.product.variants);
+    console.log("back: ", this.shopifyProduct.variants.edges);
+
     const fixedProduct = {
       ...shopifyProduct.product,
       variants: [
