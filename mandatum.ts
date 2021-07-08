@@ -96,6 +96,12 @@ class MandatumApp {
             { key: "Mandatum Discount", value: `${this.discount}%` },
             { key: "Mandatum Delivery Days", value: `${this.days} days` },
           ],
+          appliedDiscount: {
+            title: "Mandatum",
+            description: discountCode,
+            value: this.discount,
+            valueType: "PERCENTAGE"
+          }
         },
       ];
       const customAttributes = [{ key: "Mandatum Order", value: "true" }];
@@ -128,7 +134,7 @@ class MandatumApp {
 
       console.log(checkoutURL);
 
-      // location.assign(checkoutURL);
+      location.assign(checkoutURL);
     } catch (error) {
       console.log(error);
     }
