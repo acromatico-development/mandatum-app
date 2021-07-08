@@ -685,7 +685,7 @@ class MandatumApp {
           ...varian,
           available: this.shopifyProduct.variants.edges.find(
             (ddd) => ddd.node.title === varian.title
-          ).availableForSale,
+          ).node.availableForSale,
         })),
       ],
     };
