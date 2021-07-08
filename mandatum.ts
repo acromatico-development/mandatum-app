@@ -675,18 +675,25 @@ class MandatumApp {
       modalInfo.classList.remove("open");
     });
 
-    console.log("front: ", shopifyProduct.product.variants);
-    console.log("back: ", this.shopifyProduct.variants.edges);
-
     const fixedProduct = {
       ...shopifyProduct.product,
       variants: [
-        ...shopifyProduct.product.variants.map((varian) => ({
-          ...varian,
-          available: this.shopifyProduct.variants.edges.find(
-            (ddd) => ddd.node.title === varian.title
-          ).node.availableForSale,
-        })),
+        ...shopifyProduct.product.variants.map((varian) => {
+          console.log("front: ", varian);
+          const foundVariant = this.shopifyProduct.variants.edges.find(
+            (ddd) => {
+              console.log("back: ", ddd);
+              return ddd.node.title === varian.title
+            }
+          );
+
+          console.log("found: ", foundVariant)
+
+          return {
+            ...varian,
+            available: foundVariant.node.availableForSale,
+          }
+        }),
       ],
     };
 
