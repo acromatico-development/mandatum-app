@@ -20,7 +20,7 @@ function formatMoney(number: number, currency: string): string {
   return formatter.format(number);
 }
 
-const serverUrl: string = "stage-dot-mandatum-app.uc.r.appspot.com";
+const serverUrl: string = "mandatum-app.uc.r.appspot.com";
 class MandatumApp {
   discount: number;
   days: number;
