@@ -86,11 +86,11 @@ class MandatumApp {
 
       const variantIdShopify = this.shopifyProduct.variants.edges.find(
         (variant) => variant.node.title === this.shopifyVariant.title
-      ).id;
+      );
 
       const lineItems = [
         {
-          variantId: variantIdShopify,
+          variantId: variantIdShopify.node.id,
           quantity: 1,
           customAttributes: [
             { key: "Mandatum Discount", value: `${this.discount}%` },
@@ -104,6 +104,8 @@ class MandatumApp {
         shippingRateHandle: "mandatum-shipping",
         title: "Mandatum Shipping"
       };
+
+      console.log("LineItems: ", lineItems);
 
       const checkoutUrlBack = await fetch(
         `https://${serverUrl}/pay?shop=${this.shop}`,
