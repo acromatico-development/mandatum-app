@@ -1,5 +1,5 @@
 /// <reference types="url-search-params" />
-import * as Shop from "https://cdn.shopify.com/s/shopify/option_selection.js"
+import "https://cdn.shopify.com/s/shopify/option_selection.js"
 
 function futureDay(days) {
   var result: Date = new Date();
