@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@snowpack/plugin-webpack": "^3.0.0",
     "snowpack": "^3.5.1"
   },
   "dependencies": {
