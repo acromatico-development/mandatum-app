@@ -1,4 +1,5 @@
 /// <reference types="url-search-params" />
+import * as Shop from "https://cdn.shopify.com/s/shopify/option_selection.js"
 
 function futureDay(days) {
   var result: Date = new Date();
@@ -709,7 +710,7 @@ class MandatumApp {
     console.log(fixedProduct);
 
     // @ts-ignore
-    new Shopify.OptionSelectors("product-select-mandatum", {
+    new Shop.OptionSelectors("product-select-mandatum", {
       product: fixedProduct,
       onVariantSelected: (variant, selector) => {
         console.log(variant);
