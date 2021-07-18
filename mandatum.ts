@@ -1,5 +1,4 @@
 /// <reference types="url-search-params" />
-import "https://cdn.shopify.com/s/shopify/option_selection.js"
 
 function futureDay(days) {
   var result: Date = new Date();
@@ -435,6 +434,7 @@ class MandatumApp {
     const shopifyProduct = await fetch(
       `${location.href.split("?")[0]}.json`
     ).then((json) => json.json());
+    const Shop = await import('https://cdn.shopify.com/s/shopify/option_selection.js');
 
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `

@@ -1,4 +1,4 @@
-import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var t=new Date;return t.setDate(t.getDate()+n),t.toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"2-digit"})}function c(n,t){var e=new Intl.NumberFormat("en-US",{style:"currency",currency:t});return e.format(n)}var p="mandatum-app.uc.r.appspot.com",v=class{constructor(t,e,i,a,o,d){this.container=t,this.loading=!0,this.shop=e,this.discount=i,this.days=a,this.productId=o,this.shopifyProduct=d.product,this.currency=d.shop.currencyCode}async init(){return this.addStyles(),this.addMandatumButton(),await this.addMandatumModal(),this.loading=!1,this.loading}async addCartMandate(){let t=`gid://shopify/Product/${this.productId}`;console.log("Shopify Variant",this.shopifyVariant);try{let i=(await fetch(`https://${p}/getDiscountCode?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({productId:t})}).then(l=>l.json())).codeDiscountNode.codeDiscount.codes.edges[0].node.code;console.log("Shopify Product",this.shopifyProduct);let o=[{variantId:this.shopifyProduct.variants.edges.find(l=>l.node.title===this.shopifyVariant.title).node.id,quantity:1,customAttributes:[{key:"Mandatum Discount",value:`${this.discount}%`},{key:"Mandatum Delivery Days",value:`${this.days} days`}],appliedDiscount:{title:"Mandatum",description:i,value:this.discount,valueType:"PERCENTAGE"}}],d=[{key:"Mandatum Order",value:"true"}],s={price:"10.00",shippingRateHandle:"mandatum-shipping",title:"Mandatum Shipping"};console.log("LineItems: ",o);let r=await fetch(`https://${p}/pay?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lineItems:o,customAttributes:d,shippingLine:s})}).then(l=>l.json());console.log(r);let u=r.draftOrder.invoiceUrl;console.log(u),location.assign(u)}catch(e){console.log(e)}}toggleModal(){this.modalContainer.classList.toggle("open")}addStyles(){let t=document.querySelector("head"),e=document.createElement("style");e.innerHTML=`
+function g(n){var t=new Date;return t.setDate(t.getDate()+n),t.toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"2-digit"})}function s(n,t){var e=new Intl.NumberFormat("en-US",{style:"currency",currency:t});return e.format(n)}var p="mandatum-app.uc.r.appspot.com",v=class{constructor(t,e,i,c,a,o){this.container=t,this.loading=!0,this.shop=e,this.discount=i,this.days=c,this.productId=a,this.shopifyProduct=o.product,this.currency=o.shop.currencyCode}async init(){return this.addStyles(),this.addMandatumButton(),await this.addMandatumModal(),this.loading=!1,this.loading}async addCartMandate(){let t=`gid://shopify/Product/${this.productId}`;console.log("Shopify Variant",this.shopifyVariant);try{let i=(await fetch(`https://${p}/getDiscountCode?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({productId:t})}).then(r=>r.json())).codeDiscountNode.codeDiscount.codes.edges[0].node.code;console.log("Shopify Product",this.shopifyProduct);let a=[{variantId:this.shopifyProduct.variants.edges.find(r=>r.node.title===this.shopifyVariant.title).node.id,quantity:1,customAttributes:[{key:"Mandatum Discount",value:`${this.discount}%`},{key:"Mandatum Delivery Days",value:`${this.days} days`}],appliedDiscount:{title:"Mandatum",description:i,value:this.discount,valueType:"PERCENTAGE"}}],o=[{key:"Mandatum Order",value:"true"}],d={price:"10.00",shippingRateHandle:"mandatum-shipping",title:"Mandatum Shipping"};console.log("LineItems: ",a);let l=await fetch(`https://${p}/pay?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lineItems:a,customAttributes:o,shippingLine:d})}).then(r=>r.json());console.log(l);let m=l.draftOrder.invoiceUrl;console.log(m),location.assign(m)}catch(e){console.log(e)}}toggleModal(){this.modalContainer.classList.toggle("open")}addStyles(){let t=document.querySelector("head"),e=document.createElement("style");e.innerHTML=`
       .mandatum-button {
         position: fixed;
         left: 50%;
@@ -275,7 +275,7 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
           display: none;
         }
       }
-    `,t.appendChild(e)}async addMandatumModal(){let t=document.createElement("div"),e=await fetch(`${location.href.split("?")[0]}.json`).then(a=>a.json());t.classList.add("mandatum-modal"),t.innerHTML=`
+    `,t.appendChild(e)}async addMandatumModal(){let t=document.createElement("div"),e=await fetch(`${location.href.split("?")[0]}.json`).then(a=>a.json()),i=await import("https://cdn.shopify.com/s/shopify/option_selection.js");t.classList.add("mandatum-modal"),t.innerHTML=`
       <div class="mandatum-modal-box">
         <div class="mandatum-modal-head">
         <svg id="Layer_1" viewBox="0 0 720 216">
@@ -355,10 +355,10 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
         <img src="${this.shopifyProduct.images.edges[0].node.src}" alt="${this.shopifyProduct.title}"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
-          ${this.shopifyProduct.variants.edges.reduce((a,o)=>{let d=`<option value="${o.node.id}">${o.node.title} - ${c(o.node.price,this.currency)}</option>`;return a+d},"")}
+          ${this.shopifyProduct.variants.edges.reduce((a,o)=>{let d=`<option value="${o.node.id}">${o.node.title} - ${s(o.node.price,this.currency)}</option>`;return a+d},"")}
         </select>
         <p id="product-price-mandatum" class="product-price-mandatum">
-          Price | <s>${c(this.shopifyProduct.variants.edges[0].node.price,this.currency)}</s> <span>${c(this.shopifyProduct.variants.edges[0].node.price*(1-this.discount/100),this.currency)}</span>
+          Price | <s>${s(this.shopifyProduct.variants.edges[0].node.price,this.currency)}</s> <span>${s(this.shopifyProduct.variants.edges[0].node.price*(1-this.discount/100),this.currency)}</span>
         </p>
         <p class="product-price-mandatum">Delivery Date: ${g(this.days)}</p>
         <div class="mandatum-badges">
@@ -418,7 +418,7 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
                 />
               </g>
             </svg>
-            <p style="color: #767171">Discount:<br/>${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</p>
+            <p style="color: #767171">Discount:<br/>${s(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</p>
           </div>
           <div class="svg-badge">
             <svg class="svg-badge" viewBox="0 0 509 509">
@@ -451,7 +451,7 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
                 />
               </g>
             </svg>
-            <p style="color: #548235">Donation:<br/>${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</p>
+            <p style="color: #548235">Donation:<br/>${s(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</p>
           </div>
           <svg class="info-icon" id="mandate_info" viewBox="0 0 20 20" fill="none">
             <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -475,8 +475,8 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
               <li>
                 Just click and make a <span class="color">mandate</span>
                 <ul>
-                  <li>We apply a <span class="color">${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)} private discount</span> in the checkout process.</li>
-                  <li>We <span class="color">donate ${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</span> to protect forests and oceans at no cost for you.</li>
+                  <li>We apply a <span class="color">${s(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)} private discount</span> in the checkout process.</li>
+                  <li>We <span class="color">donate ${s(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</span> to protect forests and oceans at no cost for you.</li>
                 </ul>
               </li>
             </ol>
@@ -486,7 +486,7 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
           </div>
         </div>
       </div>
-    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),document.getElementById("mandate_info").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.add("open")}),document.getElementById("mandate_gotit").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.remove("open")});let i={...e.product,variants:[...e.product.variants.map(a=>{console.log("front: ",a);let o=this.shopifyProduct.variants.edges.find(d=>(console.log("back: ",d),d.node.title===a.title));return console.log("found: ",o),{...a,available:o.node.availableForSale}})]};console.log(i),new Shop.OptionSelectors("product-select-mandatum",{product:i,onVariantSelected:(a,o)=>{console.log(a),console.log(o),o.selectors[0].values[0]==="Default Title"&&o.selectors.forEach(r=>{r.element.style.display="none"});let d=document.querySelector("#product-price-mandatum"),s=document.querySelector("#mandate_mandate");d.innerHTML=`Price | <s>${c(a.price,this.currency)}</s> <span>${c(a.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=a,a.available?s.disabled=!1:s.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
+    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),document.getElementById("mandate_info").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.add("open")}),document.getElementById("mandate_gotit").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.remove("open")});let c={...e.product,variants:[...e.product.variants.map(a=>{console.log("front: ",a);let o=this.shopifyProduct.variants.edges.find(d=>(console.log("back: ",d),d.node.title===a.title));return console.log("found: ",o),{...a,available:o.node.availableForSale}})]};console.log(c),new i.OptionSelectors("product-select-mandatum",{product:c,onVariantSelected:(a,o)=>{console.log(a),console.log(o),o.selectors[0].values[0]==="Default Title"&&o.selectors.forEach(m=>{m.element.style.display="none"});let d=document.querySelector("#product-price-mandatum"),l=document.querySelector("#mandate_mandate");d.innerHTML=`Price | <s>${s(a.price,this.currency)}</s> <span>${s(a.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=a,a.available?l.disabled=!1:l.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
       <svg id="mandatum_logo" viewBox="0 0 216 216">
         <style type="text/css">
           .st0{fill:#FFFFFF;}
@@ -522,5 +522,5 @@ import"https://cdn.shopify.com/s/shopify/option_selection.js";function g(n){var 
         </g>
       </svg>
       <h3>Eco-Discount and Free Donation Available</h3>
-    `,this.container.appendChild(t),t.addEventListener("click",()=>{this.toggleModal()})}};async function f(){let n,t,e,i,a,o,d,s,r,u,l,h=location.pathname.includes("products");if(h?(console.log("Is Product"),t=document.querySelector("script[src*='mandatum']"),e=new URLSearchParams(t.src.split("?")[1]),i=e.get("shop"),a=document.querySelector("body"),o=await fetch(`${location.href.split("?")[0]}.json`).then(m=>m.json()),d=o.product.id,s=await fetch(`https://${p}/isMandatum?shop=${i}&product=${"gid://shopify/Product/"+d}`).then(m=>m.json()),r=s.isMandatum,u=parseFloat(s.descuento),l=parseInt(s.dias)):console.log("No Product"),r&&h){let m=s.newProduct;console.log("product",m),n=new v(a,i,u,l,d,m),n.init()}return n}f().then(n=>{window.mandatum=n});
+    `,this.container.appendChild(t),t.addEventListener("click",()=>{this.toggleModal()})}};async function f(){let n,t,e,i,c,a,o,d,l,m,r,h=location.pathname.includes("products");if(h?(console.log("Is Product"),t=document.querySelector("script[src*='mandatum']"),e=new URLSearchParams(t.src.split("?")[1]),i=e.get("shop"),c=document.querySelector("body"),a=await fetch(`${location.href.split("?")[0]}.json`).then(u=>u.json()),o=a.product.id,d=await fetch(`https://${p}/isMandatum?shop=${i}&product=${"gid://shopify/Product/"+o}`).then(u=>u.json()),l=d.isMandatum,m=parseFloat(d.descuento),r=parseInt(d.dias)):console.log("No Product"),l&&h){let u=d.newProduct;console.log("product",u),n=new v(c,i,m,r,o,u),n.init()}return n}f().then(n=>{window.mandatum=n});
 //# sourceMappingURL=mandatum.js.map

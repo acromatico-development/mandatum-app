@@ -1,6 +1,5 @@
 module.exports = {
   plugins: [
-    
   ],
   optimize: {
     bundle: true,
