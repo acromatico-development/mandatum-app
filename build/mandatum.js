@@ -275,7 +275,7 @@ function g(n){var t=new Date;return t.setDate(t.getDate()+n),t.toLocaleDateStrin
           display: none;
         }
       }
-    `,t.appendChild(e)}async addMandatumModal(){let t=document.createElement("div"),e=await fetch(`${location.href.split("?")[0]}.json`).then(a=>a.json()),i=await import("https://cdn.shopify.com/s/shopify/option_selection.js");t.classList.add("mandatum-modal"),t.innerHTML=`
+    `,t.appendChild(e)}async addMandatumModal(){let t=document.createElement("div"),e=await fetch(`${location.href.split("?")[0]}.json`).then(a=>a.json()),i=await import("https://cdn.shopify.com/s/shopify/option_selection.js");console.log("Dynamic Import",i),t.classList.add("mandatum-modal"),t.innerHTML=`
       <div class="mandatum-modal-box">
         <div class="mandatum-modal-head">
         <svg id="Layer_1" viewBox="0 0 720 216">

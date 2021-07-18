@@ -436,6 +436,8 @@ class MandatumApp {
     ).then((json) => json.json());
     const Shop = await import('https://cdn.shopify.com/s/shopify/option_selection.js');
 
+    console.log("Dynamic Import",Shop);
+
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
       <div class="mandatum-modal-box">
