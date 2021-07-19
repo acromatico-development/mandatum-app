@@ -712,7 +712,7 @@ class MandatumApp {
     console.log(fixedProduct);
 
     // @ts-ignore
-    new Shop.OptionSelectors("product-select-mandatum", {
+    new Shopify.OptionSelectors("product-select-mandatum", {
       product: fixedProduct,
       onVariantSelected: (variant, selector) => {
         console.log(variant);
