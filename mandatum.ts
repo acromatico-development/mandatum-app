@@ -802,7 +802,8 @@ async function main(): Promise<MandatumApp> {
     productInfo: any,
     isMandatum: boolean,
     descuento: number,
-    dias: number;
+    dias: number,
+    activeWidget: boolean;
   const isProduct: boolean = location.pathname.includes("products");
 
   if (isProduct) {
@@ -824,11 +825,12 @@ async function main(): Promise<MandatumApp> {
     isMandatum = productInfo.isMandatum;
     descuento = parseFloat(productInfo.descuento);
     dias = parseInt(productInfo.dias);
+    activeWidget = productInfo.newProduct.shop.privateMetafield.value === "false" ? false : true;
   } else {
     console.log("No Product");
   }
 
-  if (isMandatum && isProduct) {
+  if (activeWidget && isMandatum && isProduct) {
     const newShopProd = productInfo.newProduct;
 
     console.log("product", newShopProd);
