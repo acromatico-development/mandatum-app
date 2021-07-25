@@ -285,21 +285,18 @@ export default class MandatumOrder {
         }
       }
       .mandatum-card {
-        position: fixed;
-        right: 5%;
-        bottom: 2rem;
         background-color: #4910a0;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 30px;
+        min-height: 14rem;
       }
+
       .mandatum-modal-head {
-        display: flex;
-        align-items: center;
         width: 216px;
+        margin: 0 0 0 -19px;
         height: 64px;
-        padding: -10px 20px 0px 20px;
       }
       
       .svg-1 {
@@ -310,10 +307,12 @@ export default class MandatumOrder {
         width: 30px;
       }
       .card {
-        margin: 0 auto; /* Added */
+        margin: 0 0 10px; /* Added */
         float: none; /* Added */
-        margin-bottom: 10px; /* Added */
-        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
       }
       .card-body {
         align-items: center;
@@ -321,9 +320,12 @@ export default class MandatumOrder {
         padding-left: 20px;
         padding-bottom: 0px;
         justify-content: center;
+        width: 100%;
       }
       .card-text {
         color: #ffffff;
+        margin: 0 0 2rem;
+        width: 100%;
       }
       
       .card-text gr {
@@ -350,6 +352,9 @@ export default class MandatumOrder {
       .buttonIn {
         width: 300px;
         position: relative;
+        background-color: #ffffff;
+        border-radius: 10px;
+        width: 100%;
       }
       
       button {
@@ -405,7 +410,7 @@ export default class MandatumOrder {
     `;
 
     t.innerHTML = `
-      <div class="card" style="width: 25rem; height: 14rem">
+      <div class="card" style="width: 90%;">
         <div class="mandatum-modal-head">
           <svg id="svg-1" viewBox="0 0 720 216">
             <style type="text/css">
@@ -483,9 +488,7 @@ export default class MandatumOrder {
         </div>
         <div class="card-body">
           <p class="card-text">
-            <gr>${"test Store"}</gr> will donate <gr>${"$12"}</gr> to protect Nature. 
-            <br>Get recognition for the impact you just made. 
-            <br><gr>Redeem</gr> your impact and brag about it!!!
+            <gr>${"test Store"}</gr> will donate <gr>${"$12"}</gr> to protect Nature. Get recognition for the impact you just made. <gr>Redeem</gr> your impact and brag about it!!!
           </p>
           <div class="buttonIn">
             <input type="text" id="fname" name="fname" placeholder="${
