@@ -1,4 +1,5 @@
 /// <reference types="url-search-params" />
+import MandatumOrder from "./checkout-app";
 
 function futureDay(days) {
   var result: Date = new Date();
@@ -20,6 +21,7 @@ function formatMoney(number: number, currency: string): string {
 }
 
 const serverUrl: string = "mandatum-app.uc.r.appspot.com";
+
 class MandatumApp {
   discount: number;
   days: number;
@@ -434,9 +436,6 @@ class MandatumApp {
     const shopifyProduct = await fetch(
       `${location.href.split("?")[0]}.json`
     ).then((json) => json.json());
-    const Shop = await import('https://cdn.shopify.com/s/shopify/option_selection.js');
-
-    console.log("Dynamic Import",Shop);
 
     modalContainer.classList.add("mandatum-modal");
     modalContainer.innerHTML = `
@@ -793,6 +792,7 @@ class MandatumApp {
 
 async function main(): Promise<MandatumApp> {
   let MandatumInstance: MandatumApp,
+    OrderInstance: MandatumOrder,
     scriptShopify: HTMLScriptElement,
     queryString: URLSearchParams,
     shopName: string,
@@ -805,6 +805,8 @@ async function main(): Promise<MandatumApp> {
     dias: number,
     activeWidget: boolean;
   const isProduct: boolean = location.pathname.includes("products");
+  const isOrder: boolean = location.pathname.includes("orders");
+
 
   if (isProduct) {
     console.log("Is Product");
@@ -845,6 +847,10 @@ async function main(): Promise<MandatumApp> {
     );
 
     MandatumInstance.init();
+  }
+
+  if(isOrder){
+    OrderInstance = new MandatumOrder();
   }
 
   return MandatumInstance;
