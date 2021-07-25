@@ -1,32 +1,20 @@
-type Client = {
-  name: string;
-  email: string;
-};
-
 export default class MandatumOrder {
-  client: Client;
-  order: string;
-  shopURL: string;
-
   constructor() {
     this.client = {
       name: `${Shopify.checkout.shipping_address.first_name} ${Shopify.checkout.shipping_address.last_name}`,
-      email: Shopify.checkout.email,
+      email: Shopify.checkout.email
     };
     this.order = Shopify.checkout.order_id;
     this.shopURL = Shopify.shop;
   }
-
-  async init(): Promise<MandatumOrder> {
+  async init() {
     this.addStyles();
     await this.addMandatumModal();
     return this;
   }
-
-  addStyles(): void {
-    const htmlHead: HTMLHeadElement = document.querySelector("head");
-    const stylesTag: HTMLStyleElement = document.createElement("style");
-
+  addStyles() {
+    const htmlHead = document.querySelector("head");
+    const stylesTag = document.createElement("style");
     stylesTag.innerHTML = `
       .mandatum-modal .color {
         color: #541fa6;
@@ -380,16 +368,13 @@ export default class MandatumOrder {
         opacity: 1; /* Firefox */
       }    
     `;
-
     htmlHead.appendChild(stylesTag);
   }
-
   async addMandatumModal() {
-    let t: HTMLDivElement = document.createElement("div");
-    let modal: HTMLDivElement = document.createElement("div");
+    let t = document.createElement("div");
+    let modal = document.createElement("div");
     t.classList.add("mandatum-card");
     modal.classList.add("mandatum-modal-box");
-
     modal.innerHTML = `     
       <h4>Congrats!! <br> You are officially a <span style="color:green">#SaveNature</span> fighter. </h4>
       <p>
@@ -408,7 +393,6 @@ export default class MandatumOrder {
       <p> password: <b>${this.client.email}</b> <br>  </p>
       <p> <span style="color:white">.</span> </p>
     `;
-
     t.innerHTML = `
       <div class="card" style="width: 90%;">
         <div class="mandatum-modal-head">
@@ -491,17 +475,13 @@ export default class MandatumOrder {
             <gr>${"test Store"}</gr> will donate <gr>${"$12"}</gr> to protect Nature. Get recognition for the impact you just made. <gr>Redeem</gr> your impact and brag about it!!!
           </p>
           <div class="buttonIn">
-            <input type="text" id="fname" name="fname" placeholder="${
-              this.client.email
-            }">
+            <input type="text" id="fname" name="fname" placeholder="${this.client.email}">
             <button id="go_to_mandatum">REDEEM</button>
           </div>
         </div>
       </div>
     `;
-
     Shopify.Checkout.OrderStatus.addContentBox(t);
-
     document.getElementById("go_to_mandatum").addEventListener("click", () => {
       modal.classList.add("open");
     });
