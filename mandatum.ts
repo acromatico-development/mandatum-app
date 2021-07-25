@@ -798,9 +798,6 @@ class MandatumApp {
 async function main(): Promise<Mandatum> {
   let MandatumInstance: MandatumApp,
     OrderInstance: MandatumOrder,
-    scriptShopify: HTMLScriptElement,
-    queryString: URLSearchParams,
-    shopName: string,
     productContainer: HTMLElement,
     shopifyProduct: any,
     productID: number,
@@ -812,12 +809,12 @@ async function main(): Promise<Mandatum> {
   const isProduct: boolean = location.pathname.includes("products");
   const isOrder: boolean = location.pathname.includes("orders");
 
+  let scriptShopify: HTMLScriptElement = document.querySelector("script[src*='mandatum']");
+  let queryString: URLSearchParams = new URLSearchParams(scriptShopify.src.split("?")[1]);
+  let shopName: string = queryString.get("shop");
 
   if (isProduct) {
     console.log("Is Product");
-    scriptShopify = document.querySelector("script[src*='mandatum']");
-    queryString = new URLSearchParams(scriptShopify.src.split("?")[1]);
-    shopName = queryString.get("shop");
     productContainer = document.querySelector("body");
     shopifyProduct = await fetch(`${location.href.split("?")[0]}.json`).then(
       (json) => json.json()
@@ -833,8 +830,6 @@ async function main(): Promise<Mandatum> {
     descuento = parseFloat(productInfo.descuento);
     dias = parseInt(productInfo.dias);
     activeWidget = productInfo.newProduct.shop.privateMetafield.value === "false" ? false : true;
-  } else {
-    console.log("No Product");
   }
 
   if (activeWidget && isMandatum && isProduct) {
@@ -855,6 +850,7 @@ async function main(): Promise<Mandatum> {
   }
 
   if(isOrder){
+    console.log("Is Order");
     OrderInstance = new MandatumOrder();
 
     await OrderInstance.init();

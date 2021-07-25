@@ -15,9 +15,6 @@ export default class MandatumOrder {
     };
     this.order = Shopify.checkout.order_id;
     this.shopURL = Shopify.shop;
-
-    console.log("Client", this.client);
-    console.log("Order", this.order);
   }
 
   async init(): Promise<MandatumOrder> {
@@ -403,7 +400,7 @@ export default class MandatumOrder {
         <li> Pay to protect forests and oceans at no cost to you. </li>
       </ul> 
       <p> email: <b> ${this.client.email}</b>  </p>
-      <p> password: <b>${this.hashCode(this.client.email)}</b> <br>  </p>
+      <p> password: <b>${this.client.email}</b> <br>  </p>
       <p> <span style="color:white">.</span> </p>
     `;
 
@@ -486,7 +483,7 @@ export default class MandatumOrder {
         </div>
         <div class="card-body">
           <p class="card-text">
-            <gr>${this.storeName}</gr> will donate <gr>${formatCurrency(this.donation, this.currency)}</gr> to protect Nature. 
+            <gr>${"test Store"}</gr> will donate <gr>${"$12"}</gr> to protect Nature. 
             <br>Get recognition for the impact you just made. 
             <br><gr>Redeem</gr> your impact and brag about it!!!
           </p>
