@@ -1,6 +1,11 @@
 /// <reference types="url-search-params" />
 import MandatumOrder from "./checkout-app";
 
+type Mandatum = {
+  product: MandatumApp,
+  order: MandatumOrder
+}
+
 function futureDay(days) {
   var result: Date = new Date();
   result.setDate(result.getDate() + days);
@@ -790,7 +795,7 @@ class MandatumApp {
   }
 }
 
-async function main(): Promise<MandatumApp> {
+async function main(): Promise<Mandatum> {
   let MandatumInstance: MandatumApp,
     OrderInstance: MandatumOrder,
     scriptShopify: HTMLScriptElement,
@@ -851,9 +856,14 @@ async function main(): Promise<MandatumApp> {
 
   if(isOrder){
     OrderInstance = new MandatumOrder();
+
+    await OrderInstance.init();
   }
 
-  return MandatumInstance;
+  return {
+    product: MandatumInstance,
+    order: OrderInstance
+  };
 }
 
 main().then((App) => {

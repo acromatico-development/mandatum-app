@@ -3,8 +3,6 @@ type Client = {
   email: string;
 };
 
-type Order = {};
-
 export default class MandatumOrder {
   client: Client;
   order: string;
@@ -20,6 +18,12 @@ export default class MandatumOrder {
 
     console.log("Client", this.client);
     console.log("Order", this.order);
+  }
+
+  async init(): Promise<MandatumOrder> {
+    this.addStyles();
+    await this.addMandatumModal();
+    return this;
   }
 
   addStyles(): void {
