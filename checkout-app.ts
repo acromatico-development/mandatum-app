@@ -317,7 +317,6 @@ export default class MandatumOrder {
       .card-body {
         align-items: center;
         padding-top: 0px;
-        padding-left: 20px;
         padding-bottom: 0px;
         justify-content: center;
         width: 100%;
@@ -385,6 +384,7 @@ export default class MandatumOrder {
   }
 
   async addMandatumModal() {
+    const container: HTMLBodyElement = document.querySelector("body");
     let t: HTMLDivElement = document.createElement("div");
     let modal: HTMLDivElement = document.createElement("div");
     t.classList.add("mandatum-card");
@@ -501,6 +501,7 @@ export default class MandatumOrder {
     `;
 
     Shopify.Checkout.OrderStatus.addContentBox(t);
+    container.appendChild(modal);
 
     document.getElementById("go_to_mandatum").addEventListener("click", () => {
       modal.classList.add("open");
