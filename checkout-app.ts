@@ -439,7 +439,7 @@ export default class MandatumOrder {
         </ul> 
         <p> email: <strong>${this.client.email}</strong></p>
         <p> password: <strong>${this.hashCode(this.client.email)}</strong></p>
-        <button>Close</button>
+        <button class="color">Close</button>
       </div>
     `;
 
