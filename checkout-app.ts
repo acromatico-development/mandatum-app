@@ -367,7 +367,7 @@ export default class MandatumOrder {
         width: 100%;
       }
       
-      button {
+      button.white {
         color: #4910a0;
         position: absolute;
         font-weight: bold;
@@ -382,6 +382,24 @@ export default class MandatumOrder {
         cursor: pointer;
         background-color: white;
         transform: translateX(2px);
+      }
+
+      button.color {
+        color: #4910a0;
+        /* position: absolute; */
+        font-weight: bold;
+        /* top: 0; */
+        border-radius: 10px;
+        /* right: 15px; */
+        /* z-index: 2; */
+        border: none;
+        /* top: 0px; */
+        /* height: 30px; */
+        /* width: 80px; */
+        cursor: pointer;
+        background-color: white;
+        /* transform: translateX(2px); */
+        padding: 15px;
       }
       
       ::placeholder {
@@ -510,7 +528,7 @@ export default class MandatumOrder {
             <input type="text" id="fname" name="fname" placeholder="${
               this.client.email
             }">
-            <button id="go_to_mandatum">REDEEM</button>
+            <button id="go_to_mandatum" class="white">REDEEM</button>
           </div>
         </div>
       </div>
