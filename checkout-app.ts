@@ -388,25 +388,27 @@ export default class MandatumOrder {
     let t: HTMLDivElement = document.createElement("div");
     let modal: HTMLDivElement = document.createElement("div");
     t.classList.add("mandatum-card");
-    modal.classList.add("mandatum-modal-box");
+    modal.classList.add("mandatum-modal");
 
-    modal.innerHTML = `     
-      <h4>Congrats!! <br> You are officially a <span style="color:green">#SaveNature</span> fighter. </h4>
-      <p>
-        Your free Planet Account is open and waiting for you. <br> Go to 
-        <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
-        you deserve:
-      </p>
-      <ul>
-        <li> Access your personalized impact dashboard. </li>
-        <li> Calculate your carbon footprint. </li>
-        <li> Set weekly goals easy to attain. </li>
-        <li> Track your "Lifetime Impact" with all your contributions. </li>
-        <li> Pay to protect forests and oceans at no cost to you. </li>
-      </ul> 
-      <p> email: <b> ${this.client.email}</b>  </p>
-      <p> password: <b>${this.client.email}</b> <br>  </p>
-      <p> <span style="color:white">.</span> </p>
+    modal.innerHTML = `
+      <div class="mandatum-modal-box">
+        <h4>Congrats!! <br> You are officially a <span style="color:green">#SaveNature</span> fighter. </h4>
+        <p>
+          Your free Planet Account is open and waiting for you. <br> Go to 
+          <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
+          you deserve:
+        </p>
+        <ul>
+          <li> Access your personalized impact dashboard. </li>
+          <li> Calculate your carbon footprint. </li>
+          <li> Set weekly goals easy to attain. </li>
+          <li> Track your "Lifetime Impact" with all your contributions. </li>
+          <li> Pay to protect forests and oceans at no cost to you. </li>
+        </ul> 
+        <p> email: <b> ${this.client.email}</b>  </p>
+        <p> password: <b>${this.client.email}</b> <br>  </p>
+        <p> <span style="color:white">.</span> </p>
+      </div>
     `;
 
     t.innerHTML = `

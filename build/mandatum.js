@@ -349,23 +349,25 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
         color: #5e6366;
         opacity: 1; /* Firefox */
       }    
-    `,t.appendChild(a)}async addMandatumModal(){let t=document.querySelector("body"),a=document.createElement("div"),e=document.createElement("div");a.classList.add("mandatum-card"),e.classList.add("mandatum-modal-box"),e.innerHTML=`     
-      <h4>Congrats!! <br> You are officially a <span style="color:green">#SaveNature</span> fighter. </h4>
-      <p>
-        Your free Planet Account is open and waiting for you. <br> Go to 
-        <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
-        you deserve:
-      </p>
-      <ul>
-        <li> Access your personalized impact dashboard. </li>
-        <li> Calculate your carbon footprint. </li>
-        <li> Set weekly goals easy to attain. </li>
-        <li> Track your "Lifetime Impact" with all your contributions. </li>
-        <li> Pay to protect forests and oceans at no cost to you. </li>
-      </ul> 
-      <p> email: <b> ${this.client.email}</b>  </p>
-      <p> password: <b>${this.client.email}</b> <br>  </p>
-      <p> <span style="color:white">.</span> </p>
+    `,t.appendChild(a)}async addMandatumModal(){let t=document.querySelector("body"),a=document.createElement("div"),e=document.createElement("div");a.classList.add("mandatum-card"),e.classList.add("mandatum-modal"),e.innerHTML=`
+      <div class="mandatum-modal-box">
+        <h4>Congrats!! <br> You are officially a <span style="color:green">#SaveNature</span> fighter. </h4>
+        <p>
+          Your free Planet Account is open and waiting for you. <br> Go to 
+          <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
+          you deserve:
+        </p>
+        <ul>
+          <li> Access your personalized impact dashboard. </li>
+          <li> Calculate your carbon footprint. </li>
+          <li> Set weekly goals easy to attain. </li>
+          <li> Track your "Lifetime Impact" with all your contributions. </li>
+          <li> Pay to protect forests and oceans at no cost to you. </li>
+        </ul> 
+        <p> email: <b> ${this.client.email}</b>  </p>
+        <p> password: <b>${this.client.email}</b> <br>  </p>
+        <p> <span style="color:white">.</span> </p>
+      </div>
     `,a.innerHTML=`
       <div class="card" style="width: 90%;">
         <div class="mandatum-modal-head">
