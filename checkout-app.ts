@@ -33,7 +33,7 @@ export default class MandatumOrder {
       }
       
       .mandatum-modal li {
-        list-style: inherit;
+        list-style: disc;
       }
       
       .mandatum-modal {
@@ -55,7 +55,7 @@ export default class MandatumOrder {
       
       .mandatum-modal ol,
       .mandatum-modal ul {
-        margin: revert;
+        margin: 1rem 2rem;
         padding: 0 1rem;
       }
       
@@ -144,6 +144,8 @@ export default class MandatumOrder {
         box-sizing: border-box;
         width: 100%;
         margin: 0;
+        font-size: 1.2rem;
+        font-weight: bold;
       }
       
       .mandatum-modal .mandatum-modal-box p {
@@ -392,7 +394,10 @@ export default class MandatumOrder {
 
     modal.innerHTML = `
       <div class="mandatum-modal-box">
-        <h4>Congrats!! <br> You are officially a <span style="color:green">#SaveNature</span> fighter. </h4>
+        <h3>
+          Congrats!!<br>
+          You are officially a <span style="color:green">#SaveNature</span> fighter.
+        </h3>
         <p>
           Your free Planet Account is open and waiting for you. <br> Go to 
           <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
@@ -405,9 +410,8 @@ export default class MandatumOrder {
           <li> Track your "Lifetime Impact" with all your contributions. </li>
           <li> Pay to protect forests and oceans at no cost to you. </li>
         </ul> 
-        <p> email: <b> ${this.client.email}</b>  </p>
-        <p> password: <b>${this.client.email}</b> <br>  </p>
-        <p> <span style="color:white">.</span> </p>
+        <p> email: <strong>${this.client.email}</strong></p>
+        <p> password: <strong>${this.client.email}</strong></p>
       </div>
     `;
 
