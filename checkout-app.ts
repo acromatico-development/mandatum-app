@@ -23,6 +23,13 @@ export default class MandatumOrder {
     return this;
   }
 
+  hashCode = function (s) {
+    return s.split("").reduce(function (a, b) {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+  };
+
   addStyles(): void {
     const htmlHead: HTMLHeadElement = document.querySelector("head");
     const stylesTag: HTMLStyleElement = document.createElement("style");
@@ -114,6 +121,7 @@ export default class MandatumOrder {
         justify-content: space-between;
         align-items: center;
         border-radius: 10px;
+        padding-bottom: 1rem;
       }
       
       .mandatum-modal .mandatum-modal-box .mandatum-modal-head {
@@ -273,9 +281,10 @@ export default class MandatumOrder {
           background-color: white;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: center;
           align-items: center;
           border-radius: 0px;
+          padding: 0 1rem;
         }
       
         .mandatum-button {
@@ -400,7 +409,7 @@ export default class MandatumOrder {
         </h3>
         <p>
           Your free Planet Account is open and waiting for you. <br> Go to 
-          <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
+          <a href="https://www.mandatum.co/admin/#/" target="_blank">mandatum.co</a> to get the recognition
           you deserve:
         </p>
         <ul>
@@ -411,7 +420,8 @@ export default class MandatumOrder {
           <li> Pay to protect forests and oceans at no cost to you. </li>
         </ul> 
         <p> email: <strong>${this.client.email}</strong></p>
-        <p> password: <strong>${this.client.email}</strong></p>
+        <p> password: <strong>${this.hashCode(this.client.email)}</strong></p>
+        <button>Close</button>
       </div>
     `;
 

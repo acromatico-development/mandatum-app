@@ -1,4 +1,4 @@
-var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address.first_name} ${Shopify.checkout.shipping_address.last_name}`,email:Shopify.checkout.email},this.order=Shopify.checkout.order_id,this.shopURL=Shopify.shop}async init(){return this.addStyles(),await this.addMandatumModal(),this}addStyles(){let t=document.querySelector("head"),a=document.createElement("style");a.innerHTML=`
+var p=class{constructor(){this.hashCode=function(t){return t.split("").reduce(function(a,e){return a=(a<<5)-a+e.charCodeAt(0),a&a},0)},this.client={name:`${Shopify.checkout.shipping_address.first_name} ${Shopify.checkout.shipping_address.last_name}`,email:Shopify.checkout.email},this.order=Shopify.checkout.order_id,this.shopURL=Shopify.shop}async init(){return this.addStyles(),await this.addMandatumModal(),this}addStyles(){let t=document.querySelector("head"),a=document.createElement("style");a.innerHTML=`
       .mandatum-modal .color {
         color: #541fa6;
       }
@@ -85,6 +85,7 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
         justify-content: space-between;
         align-items: center;
         border-radius: 10px;
+        padding-bottom: 1rem;
       }
       
       .mandatum-modal .mandatum-modal-box .mandatum-modal-head {
@@ -244,9 +245,10 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
           background-color: white;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: center;
           align-items: center;
           border-radius: 0px;
+          padding: 0 1rem;
         }
       
         .mandatum-button {
@@ -359,7 +361,7 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
         </h3>
         <p>
           Your free Planet Account is open and waiting for you. <br> Go to 
-          <a href="https://www.mandatum.co/admin/#/">mandatum.co</a> to get the recognition
+          <a href="https://www.mandatum.co/admin/#/" target="_blank">mandatum.co</a> to get the recognition
           you deserve:
         </p>
         <ul>
@@ -370,7 +372,8 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
           <li> Pay to protect forests and oceans at no cost to you. </li>
         </ul> 
         <p> email: <strong>${this.client.email}</strong></p>
-        <p> password: <strong>${this.client.email}</strong></p>
+        <p> password: <strong>${this.hashCode(this.client.email)}</strong></p>
+        <button>Close</button>
       </div>
     `,a.innerHTML=`
       <div class="card" style="width: 90%;">
@@ -459,7 +462,7 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
           </div>
         </div>
       </div>
-    `,Shopify.Checkout.OrderStatus.addContentBox(a),t.appendChild(e),document.getElementById("go_to_mandatum").addEventListener("click",()=>{e.classList.add("open")})}},f=p;function x(i){var t=new Date;return t.setDate(t.getDate()+i),t.toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"2-digit"})}function c(i,t){var a=new Intl.NumberFormat("en-US",{style:"currency",currency:t});return a.format(i)}var h="mandatum-app.uc.r.appspot.com",b=class{constructor(t,a,e,o,d,n){this.container=t,this.loading=!0,this.shop=a,this.discount=e,this.days=o,this.productId=d,this.shopifyProduct=n.product,this.currency=n.shop.currencyCode}async init(){return this.addStyles(),this.addMandatumButton(),await this.addMandatumModal(),this.loading=!1,this.loading}async addCartMandate(){let t=`gid://shopify/Product/${this.productId}`;console.log("Shopify Variant",this.shopifyVariant);try{let e=(await fetch(`https://${h}/getDiscountCode?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({productId:t})}).then(s=>s.json())).codeDiscountNode.codeDiscount.codes.edges[0].node.code;console.log("Shopify Product",this.shopifyProduct);let d=[{variantId:this.shopifyProduct.variants.edges.find(s=>s.node.title===this.shopifyVariant.title).node.id,quantity:1,customAttributes:[{key:"Mandatum Discount",value:`${this.discount}%`},{key:"Mandatum Delivery Days",value:`${this.days} days`}],appliedDiscount:{title:"Mandatum",description:e,value:this.discount,valueType:"PERCENTAGE"}}],n=[{key:"Mandatum Order",value:"true"}],m={price:"10.00",shippingRateHandle:"mandatum-shipping",title:"Mandatum Shipping"};console.log("LineItems: ",d);let l=await fetch(`https://${h}/pay?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lineItems:d,customAttributes:n,shippingLine:m})}).then(s=>s.json());console.log(l);let u=l.draftOrder.invoiceUrl;console.log(u),location.assign(u)}catch(a){console.log(a)}}toggleModal(){this.modalContainer.classList.toggle("open")}addStyles(){let t=document.querySelector("head"),a=document.createElement("style");a.innerHTML=`
+    `,Shopify.Checkout.OrderStatus.addContentBox(a),t.appendChild(e),document.getElementById("go_to_mandatum").addEventListener("click",()=>{e.classList.add("open")})}},f=p;function b(i){var t=new Date;return t.setDate(t.getDate()+i),t.toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"2-digit"})}function c(i,t){var a=new Intl.NumberFormat("en-US",{style:"currency",currency:t});return a.format(i)}var h="mandatum-app.uc.r.appspot.com",x=class{constructor(t,a,e,o,d,n){this.container=t,this.loading=!0,this.shop=a,this.discount=e,this.days=o,this.productId=d,this.shopifyProduct=n.product,this.currency=n.shop.currencyCode}async init(){return this.addStyles(),this.addMandatumButton(),await this.addMandatumModal(),this.loading=!1,this.loading}async addCartMandate(){let t=`gid://shopify/Product/${this.productId}`;console.log("Shopify Variant",this.shopifyVariant);try{let e=(await fetch(`https://${h}/getDiscountCode?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({productId:t})}).then(s=>s.json())).codeDiscountNode.codeDiscount.codes.edges[0].node.code;console.log("Shopify Product",this.shopifyProduct);let d=[{variantId:this.shopifyProduct.variants.edges.find(s=>s.node.title===this.shopifyVariant.title).node.id,quantity:1,customAttributes:[{key:"Mandatum Discount",value:`${this.discount}%`},{key:"Mandatum Delivery Days",value:`${this.days} days`}],appliedDiscount:{title:"Mandatum",description:e,value:this.discount,valueType:"PERCENTAGE"}}],n=[{key:"Mandatum Order",value:"true"}],m={price:"10.00",shippingRateHandle:"mandatum-shipping",title:"Mandatum Shipping"};console.log("LineItems: ",d);let l=await fetch(`https://${h}/pay?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lineItems:d,customAttributes:n,shippingLine:m})}).then(s=>s.json());console.log(l);let u=l.draftOrder.invoiceUrl;console.log(u),location.assign(u)}catch(a){console.log(a)}}toggleModal(){this.modalContainer.classList.toggle("open")}addStyles(){let t=document.querySelector("head"),a=document.createElement("style");a.innerHTML=`
       .mandatum-button {
         position: fixed;
         left: 50%;
@@ -821,7 +824,7 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
         <p id="product-price-mandatum" class="product-price-mandatum">
           Price | <s>${c(this.shopifyProduct.variants.edges[0].node.price,this.currency)}</s> <span>${c(this.shopifyProduct.variants.edges[0].node.price*(1-this.discount/100),this.currency)}</span>
         </p>
-        <p class="product-price-mandatum">Delivery Date: ${x(this.days)}</p>
+        <p class="product-price-mandatum">Delivery Date: ${b(this.days)}</p>
         <div class="mandatum-badges">
           <div class="svg-badge">
             <svg viewBox="0 0 510 509">
@@ -932,7 +935,7 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
               <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <ol>
-              <li>To be delivered by <span class="color">${x(this.days)}</span></li>
+              <li>To be delivered by <span class="color">${b(this.days)}</span></li>
               <li>
                 Just click and make a <span class="color">mandate</span>
                 <ul>
@@ -983,5 +986,5 @@ var p=class{constructor(){this.client={name:`${Shopify.checkout.shipping_address
         </g>
       </svg>
       <h3>Eco-Discount and Free Donation Available</h3>
-    `,this.container.appendChild(t),t.addEventListener("click",()=>{this.toggleModal()})}};async function w(){let i,t,a,e,o,d,n,m,l,u,s=location.pathname.includes("products"),v=location.pathname.includes("orders"),y=document.querySelector("script[src*='mandatum']"),g=new URLSearchParams(y.src.split("?")[1]).get("shop");if(s&&(console.log("Is Product"),a=document.querySelector("body"),e=await fetch(`${location.href.split("?")[0]}.json`).then(r=>r.json()),o=e.product.id,d=await fetch(`https://${h}/isMandatum?shop=${g}&product=${"gid://shopify/Product/"+o}`).then(r=>r.json()),n=d.isMandatum,m=parseFloat(d.descuento),l=parseInt(d.dias),u=d.newProduct.shop.privateMetafield.value!=="false"),u&&n&&s){let r=d.newProduct;console.log("product",r),i=new b(a,g,m,l,o,r),i.init()}return v&&(console.log("Is Order"),t=new f,await t.init()),{product:i,order:t}}w().then(i=>{window.mandatum=i});
+    `,this.container.appendChild(t),t.addEventListener("click",()=>{this.toggleModal()})}};async function w(){let i,t,a,e,o,d,n,m,l,u,s=location.pathname.includes("products"),v=location.pathname.includes("orders"),y=document.querySelector("script[src*='mandatum']"),g=new URLSearchParams(y.src.split("?")[1]).get("shop");if(s&&(console.log("Is Product"),a=document.querySelector("body"),e=await fetch(`${location.href.split("?")[0]}.json`).then(r=>r.json()),o=e.product.id,d=await fetch(`https://${h}/isMandatum?shop=${g}&product=${"gid://shopify/Product/"+o}`).then(r=>r.json()),n=d.isMandatum,m=parseFloat(d.descuento),l=parseInt(d.dias),u=d.newProduct.shop.privateMetafield.value!=="false"),u&&n&&s){let r=d.newProduct;console.log("product",r),i=new x(a,g,m,l,o,r),i.init()}return v&&(console.log("Is Order"),t=new f,await t.init()),{product:i,order:t}}w().then(i=>{window.mandatum=i});
 //# sourceMappingURL=mandatum.js.map
