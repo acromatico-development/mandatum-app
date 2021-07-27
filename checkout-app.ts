@@ -386,19 +386,11 @@ export default class MandatumOrder {
 
       button.color {
         color: #4910a0;
-        /* position: absolute; */
         font-weight: bold;
-        /* top: 0; */
         border-radius: 10px;
-        /* right: 15px; */
-        /* z-index: 2; */
         border: none;
-        /* top: 0px; */
-        /* height: 30px; */
-        /* width: 80px; */
         cursor: pointer;
         background-color: white;
-        /* transform: translateX(2px); */
         padding: 15px;
       }
       
@@ -439,7 +431,7 @@ export default class MandatumOrder {
         </ul> 
         <p> email: <strong>${this.client.email}</strong></p>
         <p> password: <strong>${this.hashCode(this.client.email)}</strong></p>
-        <button class="color">Close</button>
+        <button class="color" id="mandatum_modal_close">Close</button>
       </div>
     `;
 
@@ -539,6 +531,10 @@ export default class MandatumOrder {
 
     document.getElementById("go_to_mandatum").addEventListener("click", () => {
       modal.classList.add("open");
+    });
+
+    document.getElementById("mandatum_modal_close").addEventListener("click", () => {
+      modal.classList.remove("open");
     });
   }
 }

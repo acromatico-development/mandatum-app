@@ -805,7 +805,8 @@ async function main(): Promise<Mandatum> {
     isMandatum: boolean,
     descuento: number,
     dias: number,
-    activeWidget: boolean;
+    activeWidget: boolean,
+    isMandatumOrder: boolean;
   const isProduct: boolean = location.pathname.includes("products");
   const isOrder: boolean = location.pathname.includes("orders");
 
@@ -850,7 +851,17 @@ async function main(): Promise<Mandatum> {
   }
 
   if(isOrder){
+    
     console.log("Is Order");
+
+    const mandateProductFound = Shopify.checkout.line_items.find(prod => {
+      return prod.properties["Mandatum Discount"] ? true : false;
+    });
+
+    isMandatumOrder = mandateProductFound ? true : false;
+  }
+
+  if(isOrder && isMandatumOrder){
     OrderInstance = new MandatumOrder();
 
     await OrderInstance.init();
