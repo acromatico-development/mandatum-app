@@ -862,6 +862,7 @@ async function main(): Promise<Mandatum> {
   }
 
   if(isOrder && isMandatumOrder){
+    console.log("Is mandatum Order")
     OrderInstance = new MandatumOrder();
 
     await OrderInstance.init();
