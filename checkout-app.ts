@@ -1,3 +1,5 @@
+import { futureDay, formatMoney } from "./helpers";
+
 type Client = {
   name: string;
   email: string;
@@ -7,14 +9,20 @@ export default class MandatumOrder {
   client: Client;
   order: string;
   shopURL: string;
+  discount: number;
+  price: number;
+  shopName: string;
 
-  constructor() {
+  constructor(discount, price, shopName) {
     this.client = {
       name: `${Shopify.checkout.shipping_address.first_name} ${Shopify.checkout.shipping_address.last_name}`,
       email: Shopify.checkout.email,
     };
     this.order = Shopify.checkout.order_id;
     this.shopURL = Shopify.shop;
+    this.discount = discount;
+    this.price = price;
+    this.shopName = shopName;
   }
 
   async init(): Promise<MandatumOrder> {
@@ -514,10 +522,10 @@ export default class MandatumOrder {
         </div>
         <div class="card-body">
           <p class="card-text">
-            <gr>${"test Store"}</gr> will donate <gr>${"$12"}</gr> to protect Nature. Get recognition for the impact you just made. <gr>Redeem</gr> your impact and brag about it!!!
+            <gr>${this.shopName}</gr> will donate <gr>${formatMoney(this.price * this.discount, Shopify.checkout.currency)}</gr> to protect Nature. Get recognition for the impact you just made. <gr>Redeem</gr> your impact and brag about it!!!
           </p>
           <div class="buttonIn">
-            <input type="text" id="fname" name="fname" placeholder="${
+            <input type="text" id="fname" name="fname" value="${
               this.client.email
             }">
             <button id="go_to_mandatum" class="white">REDEEM</button>

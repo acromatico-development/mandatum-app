@@ -1,4 +1,133 @@
-function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"2-digit"})}function c(s,t){var o=new Intl.NumberFormat("en-US",{style:"currency",currency:t});return o.format(s)}var x=class{constructor(t,o,d,e,a,n){this.container=t,this.loading=!0,this.shop=o,this.discount=d,this.days=e,this.productId=a,this.shopifyProduct=n.product,this.currency=n.shop.currencyCode}async init(){return this.addStyles(),this.addMandatumButton(),await this.addMandatumModal(),this.loading=!1,this.loading}async addCartMandate(){let t=`gid://shopify/Product/${this.productId}`;console.log("Shopify Variant",this.shopifyVariant);try{let d=(await fetch(`https://${serverUrl}/getDiscountCode?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({productId:t})}).then(r=>r.json())).codeDiscountNode.codeDiscount.codes.edges[0].node.code;console.log("Shopify Product",this.shopifyProduct);let a=[{variantId:this.shopifyProduct.variants.edges.find(r=>r.node.title===this.shopifyVariant.title).node.id,quantity:1,customAttributes:[{key:"Mandatum Discount",value:`${this.discount}%`},{key:"Mandatum Delivery Days",value:`${this.days} days`}],appliedDiscount:{title:"Mandatum",description:d,value:this.discount,valueType:"PERCENTAGE"}}],n=[{key:"Mandatum Order",value:"true"}],m={price:"10.00",shippingRateHandle:"mandatum-shipping",title:"Mandatum Shipping"};console.log("LineItems: ",a);let l=await fetch(`https://${serverUrl}/pay?shop=${this.shop}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lineItems:a,customAttributes:n,shippingLine:m})}).then(r=>r.json());console.log(l);let u=l.draftOrder.invoiceUrl;console.log(u),location.assign(u)}catch(o){console.log(o)}}toggleModal(){this.modalContainer.classList.toggle("open")}addStyles(){let t=document.querySelector("head"),o=document.createElement("style");o.innerHTML=`
+import { futureDay, formatMoney } from "./helpers";
+
+export default class MandatumApp {
+  discount: number;
+  days: number;
+  container: HTMLElement;
+  modalContainer: HTMLDivElement;
+  loading: boolean;
+  shop: string;
+  productId: number;
+  shopifyProduct;
+  shopifyVariant;
+  currency: string;
+
+  constructor(
+    container: HTMLElement,
+    shop: string,
+    descuento: number,
+    dias: number,
+    productId: number,
+    shopifyProduct
+  ) {
+    this.container = container;
+    this.loading = true;
+    this.shop = shop;
+    this.discount = descuento;
+    this.days = dias;
+    this.productId = productId;
+    this.shopifyProduct = shopifyProduct.product;
+    this.currency = shopifyProduct.shop.currencyCode;
+  }
+
+  async init(): Promise<Boolean> {
+    this.addStyles();
+    this.addMandatumButton();
+    await this.addMandatumModal();
+    this.loading = false;
+
+    return this.loading;
+  }
+
+  async addCartMandate(): Promise<any> {
+    const productId: string = `gid://shopify/Product/${this.productId}`;
+
+    console.log("Shopify Variant", this.shopifyVariant);
+
+    try {
+      const codeData = await fetch(
+        `https://${serverUrl}/getDiscountCode?shop=${this.shop}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+          }),
+        }
+      ).then((json) => json.json());
+
+      const discountCode =
+        codeData.codeDiscountNode.codeDiscount.codes.edges[0].node.code;
+
+      console.log("Shopify Product", this.shopifyProduct);
+
+      const variantIdShopify = this.shopifyProduct.variants.edges.find(
+        (variant) => variant.node.title === this.shopifyVariant.title
+      );
+
+      const lineItems = [
+        {
+          variantId: variantIdShopify.node.id,
+          quantity: 1,
+          customAttributes: [
+            { key: "Mandatum Discount", value: `${this.discount}%` },
+            { key: "Mandatum Delivery Days", value: `${this.days} days` },
+          ],
+          appliedDiscount: {
+            title: "Mandatum",
+            description: discountCode,
+            value: this.discount,
+            valueType: "PERCENTAGE"
+          }
+        },
+      ];
+      const customAttributes = [{ key: "Mandatum Order", value: "true" }];
+      const shippingLine = {
+        price: "10.00",
+        shippingRateHandle: "mandatum-shipping",
+        title: "Mandatum Shipping"
+      };
+
+      console.log("LineItems: ", lineItems);
+
+      const checkoutUrlBack = await fetch(
+        `https://${serverUrl}/pay?shop=${this.shop}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lineItems,
+            customAttributes, 
+            shippingLine
+          }),
+        }
+      ).then((json) => json.json());
+
+      console.log(checkoutUrlBack);
+
+      let checkoutURL = checkoutUrlBack.draftOrder.invoiceUrl;
+
+      console.log(checkoutURL);
+
+      location.assign(checkoutURL);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  toggleModal(): void {
+    this.modalContainer.classList.toggle("open");
+  }
+
+  addStyles(): void {
+    const htmlHead: HTMLHeadElement = document.querySelector("head");
+    const stylesTag: HTMLStyleElement = document.createElement("style");
+
+    stylesTag.innerHTML = `
       .mandatum-button {
         position: fixed;
         left: 50%;
@@ -275,7 +404,19 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
           display: none;
         }
       }
-    `,t.appendChild(o)}async addMandatumModal(){let t=document.createElement("div"),o=await fetch(`${location.href.split("?")[0]}.json`).then(e=>e.json());t.classList.add("mandatum-modal"),t.innerHTML=`
+    `;
+
+    htmlHead.appendChild(stylesTag);
+  }
+
+  async addMandatumModal(): Promise<void> {
+    const modalContainer: HTMLDivElement = document.createElement("div");
+    const shopifyProduct = await fetch(
+      `${location.href.split("?")[0]}.json`
+    ).then((json) => json.json());
+
+    modalContainer.classList.add("mandatum-modal");
+    modalContainer.innerHTML = `
       <div class="mandatum-modal-box">
         <div class="mandatum-modal-head">
         <svg id="Layer_1" viewBox="0 0 720 216">
@@ -352,15 +493,24 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
           </g>
         </svg>
         </div>
-        <img src="${this.shopifyProduct.images.edges[0].node.src}" alt="${this.shopifyProduct.title}"/>
+        <img src="${this.shopifyProduct.images.edges[0].node.src}" alt="${
+      this.shopifyProduct.title
+    }"/>
         <h3>${this.shopifyProduct.title}</h3>
         <select id="product-select-mandatum" name="product-select-mandatum">
-          ${this.shopifyProduct.variants.edges.reduce((e,a)=>{let n=`<option value="${a.node.id}">${a.node.title} - ${c(a.node.price,this.currency)}</option>`;return e+n},"")}
+          ${this.shopifyProduct.variants.edges.reduce((prev, curr) => {
+            const newOption = `<option value="${curr.node.id}">${
+              curr.node.title
+            } - ${formatMoney(curr.node.price, this.currency)}</option>`;
+            return prev + newOption;
+          }, "")}
         </select>
         <p id="product-price-mandatum" class="product-price-mandatum">
-          Price | <s>${c(this.shopifyProduct.variants.edges[0].node.price,this.currency)}</s> <span>${c(this.shopifyProduct.variants.edges[0].node.price*(1-this.discount/100),this.currency)}</span>
+          Price | <s>${formatMoney(this.shopifyProduct.variants.edges[0].node.price, this.currency)}</s> <span>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (1 - this.discount / 100), this.currency)}</span>
         </p>
-        <p class="product-price-mandatum">Delivery Date: ${b(this.days)}</p>
+        <p class="product-price-mandatum">Delivery Date: ${futureDay(
+          this.days
+        )}</p>
         <div class="mandatum-badges">
           <div class="svg-badge">
             <svg viewBox="0 0 510 509">
@@ -418,7 +568,7 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
                 />
               </g>
             </svg>
-            <p style="color: #767171">Discount:<br/>${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</p>
+            <p style="color: #767171">Discount:<br/>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</p>
           </div>
           <div class="svg-badge">
             <svg class="svg-badge" viewBox="0 0 509 509">
@@ -451,7 +601,7 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
                 />
               </g>
             </svg>
-            <p style="color: #548235">Donation:<br/>${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</p>
+            <p style="color: #548235">Donation:<br/>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</p>
           </div>
           <svg class="info-icon" id="mandate_info" viewBox="0 0 20 20" fill="none">
             <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -471,12 +621,14 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
               <path d="M10 6.66669H10.0083" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <ol>
-              <li>To be delivered by <span class="color">${b(this.days)}</span></li>
+              <li>To be delivered by <span class="color">${futureDay(
+                this.days
+              )}</span></li>
               <li>
                 Just click and make a <span class="color">mandate</span>
                 <ul>
-                  <li>We apply a <span class="color">${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)} private discount</span> in the checkout process.</li>
-                  <li>We <span class="color">donate ${c(this.shopifyProduct.variants.edges[0].node.price*(this.discount/100),this.currency)}</span> to protect forests and oceans at no cost for you.</li>
+                  <li>We apply a <span class="color">${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)} private discount</span> in the checkout process.</li>
+                  <li>We <span class="color">donate ${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</span> to protect forests and oceans at no cost for you.</li>
                 </ul>
               </li>
             </ol>
@@ -486,7 +638,92 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
           </div>
         </div>
       </div>
-    `,this.modalContainer=t,this.container.appendChild(t),document.getElementById("mandate_cancel").addEventListener("click",()=>{this.toggleModal()}),document.getElementById("mandate_mandate").addEventListener("click",()=>{this.addCartMandate()}),document.getElementById("mandate_info").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.add("open")}),document.getElementById("mandate_gotit").addEventListener("click",()=>{document.getElementById("mandate_info_box").classList.remove("open")});let d={...o.product,variants:[...o.product.variants.map(e=>{console.log("front: ",e);let a=this.shopifyProduct.variants.edges.find(n=>(console.log("back: ",n),n.node.title===e.title));return console.log("found: ",a),{...e,available:a.node.availableForSale}})]};console.log(d),new Shopify.OptionSelectors("product-select-mandatum",{product:d,onVariantSelected:(e,a)=>{console.log(e),console.log(a),a.selectors[0].values[0]==="Default Title"&&a.selectors.forEach(l=>{l.element.style.display="none"});let n=document.querySelector("#product-price-mandatum"),m=document.querySelector("#mandate_mandate");n.innerHTML=`Price | <s>${c(e.price,this.currency)}</s> <span>${c(e.price*(1-this.discount/100),this.currency)}</span>`,this.shopifyVariant=e,e.available?m.disabled=!1:m.disabled=!0}})}addMandatumButton(){let t=document.createElement("div");t.classList.add("mandatum-button"),t.innerHTML=`
+    `;
+
+    this.modalContainer = modalContainer;
+
+    this.container.appendChild(modalContainer);
+
+    document.getElementById("mandate_cancel").addEventListener("click", () => {
+      this.toggleModal();
+    });
+
+    document.getElementById("mandate_mandate").addEventListener("click", () => {
+      this.addCartMandate();
+    });
+
+    document.getElementById("mandate_info").addEventListener("click", () => {
+      const modalInfo = document.getElementById("mandate_info_box");
+
+      modalInfo.classList.add("open");
+    });
+
+    document.getElementById("mandate_gotit").addEventListener("click", () => {
+      const modalInfo = document.getElementById("mandate_info_box");
+
+      modalInfo.classList.remove("open");
+    });
+
+    const fixedProduct = {
+      ...shopifyProduct.product,
+      variants: [
+        ...shopifyProduct.product.variants.map((varian) => {
+          console.log("front: ", varian);
+          const foundVariant = this.shopifyProduct.variants.edges.find(
+            (ddd) => {
+              console.log("back: ", ddd);
+              return ddd.node.title === varian.title
+            }
+          );
+
+          console.log("found: ", foundVariant)
+
+          return {
+            ...varian,
+            available: foundVariant.node.availableForSale,
+          }
+        }),
+      ],
+    };
+
+    console.log(fixedProduct);
+
+    // @ts-ignore
+    new Shopify.OptionSelectors("product-select-mandatum", {
+      product: fixedProduct,
+      onVariantSelected: (variant, selector) => {
+        console.log(variant);
+        console.log(selector);
+
+        if (selector.selectors[0].values[0] === "Default Title") {
+          selector.selectors.forEach((selecto) => {
+            selecto.element.style.display = "none";
+          });
+        }
+
+        const precioMandatum: HTMLParagraphElement = document.querySelector(
+          "#product-price-mandatum"
+        );
+        const mandateButton: HTMLButtonElement =
+          document.querySelector("#mandate_mandate");
+
+        precioMandatum.innerHTML = `Price | <s>${formatMoney(variant.price, this.currency)}</s> <span>${formatMoney(variant.price * (1 - this.discount / 100), this.currency)}</span>`;
+
+        this.shopifyVariant = variant;
+
+        if (variant.available) {
+          mandateButton.disabled = false;
+        } else {
+          mandateButton.disabled = true;
+        }
+      },
+    });
+  }
+
+  addMandatumButton(): void {
+    const button: HTMLDivElement = document.createElement("div");
+    button.classList.add("mandatum-button");
+    button.innerHTML = `
       <svg id="mandatum_logo" viewBox="0 0 216 216">
         <style type="text/css">
           .st0{fill:#FFFFFF;}
@@ -522,479 +759,11 @@ function b(s){var t=new Date;return t.setDate(t.getDate()+s),t.toLocaleDateStrin
         </g>
       </svg>
       <h3>Eco-Discount and Free Donation Available</h3>
-    `,this.container.appendChild(t),t.addEventListener("click",()=>{this.toggleModal()})}},C=x;var v=class{constructor(t,o,d){this.hashCode=function(e){return e.split("").reduce(function(a,n){return a=(a<<5)-a+n.charCodeAt(0),a&a},0)},this.client={name:`${Shopify.checkout.shipping_address.first_name} ${Shopify.checkout.shipping_address.last_name}`,email:Shopify.checkout.email},this.order=Shopify.checkout.order_id,this.shopURL=Shopify.shop,this.discount=t,this.price=o,this.shopName=d}async init(){return this.addStyles(),await this.addMandatumModal(),this}addStyles(){let t=document.querySelector("head"),o=document.createElement("style");o.innerHTML=`
-      .mandatum-modal .color {
-        color: #541fa6;
-      }
-      
-      .mandatum-modal li {
-        list-style: disc;
-      }
-      
-      .mandatum-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 100000;
-      }
-      
-      .mandatum-modal.open {
-        display: flex;
-      }
-      
-      .mandatum-modal ol,
-      .mandatum-modal ul {
-        margin: 1rem 2rem;
-        padding: 0 1rem;
-      }
-      
-      .mandatum-modal .mandatum-info-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000000;
-      }
-      
-      .mandatum-modal .mandatum-info-modal.open {
-        display: flex;
-      }
-      
-      .mandatum-modal .mandatum-info-modal .mandatum-info-box {
-        width: 90%;
-        max-width: 400px;
-        max-height: 90%;
-        background-color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 10px;
-        overflow: hidden;
-        padding: 20px 15px;
-      }
-      
-      .mandatum-modal .mandatum-info-modal .mandatum-info-box svg {
-        width: 30px;
-      }
-      
-      .mandatum-modal
-        .mandatum-info-modal
-        .mandatum-info-box
-        .mandatum-modal-buttons {
-        justify-content: center;
-        margin: 10px;
-        box-sizing: border-box;
-        width: 90%;
-      }
-      
-      .mandatum-modal .mandatum-modal-box {
-        width: 90%;
-        max-width: 400px;
-        max-height: 90%;
-        background-color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 10px;
-        padding-bottom: 1rem;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-modal-head {
-        width: 100%;
-        height: 80%;
-        background-color: #541fa6;
-        color: white;
-        box-sizing: border-box;
-        border-radius: 10px 10px 0 0;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-modal-head svg {
-        width: 200px;
-        max-width: 100%;
-      }
-      
-      .mandatum-modal-intro {
-        text-align: center;
-        box-sizing: border-box;
-        width: 100%;
-        padding: 20px;
-        margin: 0;
-      }
-      
-      .mandatum-modal .mandatum-modal-box h3 {
-        padding: 20px;
-        text-align: center;
-        box-sizing: border-box;
-        width: 100%;
-        margin: 0;
-        font-size: 1.2rem;
-        font-weight: bold;
-      }
-      
-      .mandatum-modal .mandatum-modal-box p {
-        padding: 0;
-        text-align: center;
-        box-sizing: border-box;
-        width: 100%;
-        margin: 0;
-      }
-      
-      .mandatum-modal .mandatum-modal-box h4 {
-        padding: 0;
-        text-align: center;
-        box-sizing: border-box;
-        width: 100%;
-        margin: 10px;
-      }
-      
-      .mandatum-modal .mandatum-modal-box img {
-        width: 35%;
-        margin-top: 10px;
-        margin-bottom: -5px;
-      }
-      
-      .mandatum-modal .selector-wrapper {
-        width: 100%;
-      }
-      
-      .mandatum-modal .product-price-mandatum {
-        font-weight: bold;
-      }
-      
-      .mandatum-modal .product-price-mandatum span {
-        color: #541fa6;
-      }
-      
-      .mandatum-modal .single-option-selector {
-        opacity: 1;
-        width: 90%;
-        padding: 10px 15px;
-        display: block;
-        border: 1px solid #541fa6;
-        margin: 0 auto;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-modal-buttons {
-        width: 50%;
-        box-sizing: border-box;
-        margin: 2rem 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 10px;
-      }
-      
-      .buttonMandatum {
-        width: 10%;
-        height: 15%;
-        padding: 10px 10px;
-        border-radius: 10px;
-        cursor: pointer;
-        background-color: #ffffff;
-        align-items: center;
-        color: white;
-        border: none;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-modal-buttons button[disabled] {
-        background-color: grey;
-        cursor: auto;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-evenly;
-        margin-top: 10px;
-        position: relative;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges .info-icon {
-        position: absolute;
-        right: 10px;
-        top: 0px;
-        width: 20px;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges .info-icon:hover {
-        cursor: pointer;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges .svg-badge {
-        width: 35%;
-        position: relative;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges .svg-badge p {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        position: absolute;
-        text-align: center;
-        bottom: 17%;
-        font-weight: bold;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges .svg-badge svg {
-        width: 100%;
-      }
-      
-      .mandatum-modal .mandatum-modal-box .mandatum-badges .svg-badge svg {
-        width: 100%;
-      }
-      
-      @media (max-width: 600px) {
-        .mandatum-modal .mandatum-modal-box img {
-          width: 40%;
-          margin: 1rem auto 0;
-        }
-      
-        .mandatum-modal .mandatum-modal-box {
-          width: 100%;
-          max-width: 100%;
-          min-height: 100%;
-          background-color: white;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          border-radius: 0px;
-          padding: 0 1rem;
-        }
-      
-        .mandatum-button {
-          padding: 0;
-        }
-      
-        .mandatum-button h3 {
-          display: none;
-        }
-      }
-      .mandatum-card {
-        background-color: #4910a0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 30px;
-        min-height: 14rem;
-      }
+    `;
+    this.container.appendChild(button);
 
-      .mandatum-modal-head {
-        width: 216px;
-        margin: 0 0 0 -19px;
-        height: 64px;
-      }
-      
-      .svg-1 {
-        margin: 0 auto;
-        display: block;
-        width: 30px;
-        max-width: 10%;
-        width: 30px;
-      }
-      .card {
-        margin: 0 0 10px; /* Added */
-        float: none; /* Added */
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-      }
-      .card-body {
-        align-items: center;
-        padding-top: 0px;
-        padding-bottom: 0px;
-        justify-content: center;
-        width: 100%;
-      }
-      .card-text {
-        color: #ffffff;
-        margin: 0 0 1rem;
-        width: 100%;
-      }
-      
-      .card-text gr {
-        color: #00ff6c;
-        font-weight: bold;
-      }
-      
-      input[type="text"] {
-        margin: 0px;
-        padding: 0px;
-        width: 80%;
-        outline: none;
-        height: 30px;
-        border-radius: 10px;
-        text-align: center;
-        border: none;
-        top: 0;
-      }
-      
-      input[type="text"] .some {
-        background-color: #d1d1d1;
-      }
-      
-      .buttonIn {
-        width: 300px;
-        position: relative;
-        background-color: #ffffff;
-        border-radius: 10px;
-        width: 100%;
-      }
-      
-      button.white {
-        color: #4910a0;
-        position: absolute;
-        font-weight: bold;
-        top: 0;
-        border-radius: 10px;
-        right: 15px;
-        z-index: 2;
-        border: none;
-        top: 0px;
-        height: 30px;
-        width: 80px;
-        cursor: pointer;
-        background-color: white;
-        transform: translateX(2px);
-      }
-
-      button.color {
-        color: #4910a0;
-        font-weight: bold;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        background-color: white;
-        padding: 15px;
-      }
-      
-      ::placeholder {
-        /* Chrome, Firefox, Opera, Safari 10.1+ */
-        color: #5e6366;
-        opacity: 1; /* Firefox */
-      }    
-    `,t.appendChild(o)}async addMandatumModal(){let t=document.querySelector("body"),o=document.createElement("div"),d=document.createElement("div");o.classList.add("mandatum-card"),d.classList.add("mandatum-modal"),d.innerHTML=`
-      <div class="mandatum-modal-box">
-        <h3>
-          Congrats!!<br>
-          You are officially a <span style="color:green">#SaveNature</span> fighter.
-        </h3>
-        <p>
-          Your free Planet Account is open and waiting for you. <br> Go to 
-          <a href="https://www.mandatum.co/admin/#/" target="_blank">mandatum.co</a> to get the recognition
-          you deserve:
-        </p>
-        <ul>
-          <li> Access your personalized impact dashboard. </li>
-          <li> Calculate your carbon footprint. </li>
-          <li> Set weekly goals easy to attain. </li>
-          <li> Track your "Lifetime Impact" with all your contributions. </li>
-          <li> Pay to protect forests and oceans at no cost to you. </li>
-        </ul> 
-        <p> email: <strong>${this.client.email}</strong></p>
-        <p> password: <strong>${this.hashCode(this.client.email)}</strong></p>
-        <button class="color" id="mandatum_modal_close">Close</button>
-      </div>
-    `,o.innerHTML=`
-      <div class="card" style="width: 90%;">
-        <div class="mandatum-modal-head">
-          <svg id="svg-1" viewBox="0 0 720 216">
-            <style type="text/css">
-                .st0{fill:#FFFFFF;}
-            </style>
-            <g id="Layer_1_1_">
-            </g>
-            <g id="Layer_2">
-                <g>
-                <g id="Layer_2_1_">
-                    <g>
-                    <g>
-                        <g>
-                        <path class="st0" d="M68.3,145.7c-3.6,0-6.5-2.9-6.5-6.5v-43c0-3.6,2.9-6.5,6.5-6.5c3.6,0,6.5,2.9,6.5,6.5v43
-                            C74.8,142.8,71.9,145.7,68.3,145.7z"/>
-                        </g>
-                    </g>
-                    <g>
-                        <g>
-                        <path class="st0" d="M89.4,145.7c-3.6,0-6.5-2.9-6.5-6.5v-29.8c0-3.6,2.9-6.5,6.5-6.5c3.6,0,6.5,2.9,6.5,6.5v29.7
-                            C95.9,142.8,93,145.7,89.4,145.7z"/>
-                        </g>
-                    </g>
-                    <g>
-                        <g>
-                        <g>
-                            <path class="st0" d="M110.5,145.7c-3.6,0-6.5-2.9-6.5-6.5v-43c0-3.6,2.9-6.5,6.5-6.5s6.5,2.9,6.5,6.5v43
-                            C117,142.8,114.1,145.7,110.5,145.7z"/>
-                        </g>
-                        </g>
-                    </g>
-                    <circle class="st0" cx="110.5" cy="76.8" r="6.5"/>
-                    <circle class="st0" cx="89.4" cy="89.7" r="6.5"/>
-                    <circle class="st0" cx="68.1" cy="76.8" r="6.5"/>
-                    </g>
-                </g>
-                <g>
-                    <g>
-                    <path class="st0" d="M164.2,97c0-3.4,2.6-6.1,6-6.1s6.1,2.7,6.1,6.1v2.5c3.4-4.7,8-9.1,16-9.1c7.6,0,12.9,3.7,15.7,9.3
-                        c4.2-5.6,9.8-9.3,17.7-9.3c11.4,0,18.4,7.3,18.4,20.1v28.1c0,3.4-2.6,6-6,6s-6.1-2.6-6.1-6v-24.4c0-8.4-3.9-12.8-10.7-12.8
-                        c-6.6,0-11.2,4.6-11.2,13v24.2c0,3.4-2.7,6-6,6c-3.4,0-6.1-2.6-6.1-6v-24.5c0-8.2-4-12.7-10.7-12.7s-11.2,5-11.2,13v24.2
-                        c0,3.4-2.7,6-6.1,6c-3.3,0-6-2.6-6-6V97H164.2z"/>
-                    <path class="st0" d="M251.3,128.9v-0.2c0-11.3,8.9-16.9,21.7-16.9c5.9,0,10.1,0.9,14.1,2.2v-1.3c0-7.5-4.6-11.4-13-11.4
-                        c-4.6,0-8.4,0.8-11.6,2.1c-0.7,0.2-1.3,0.3-1.9,0.3c-2.8,0-5.1-2.2-5.1-5c0-2.2,1.5-4.1,3.3-4.8c5-1.9,10.1-3.1,16.9-3.1
-                        c7.9,0,13.7,2.1,17.4,5.9c3.9,3.8,5.7,9.4,5.7,16.2v25.9c0,3.3-2.6,5.8-5.9,5.8c-3.5,0-5.9-2.4-5.9-5.1v-2
-                        c-3.6,4.3-9.1,7.7-17.1,7.7C260.1,145.1,251.3,139.5,251.3,128.9z M287.4,125.1v-3.6c-3.1-1.2-7.2-2.1-11.9-2.1
-                        c-7.8,0-12.3,3.3-12.3,8.8v0.2c0,5.1,4.5,8,10.3,8C281.3,136.4,287.4,131.8,287.4,125.1z"/>
-                    <path class="st0" d="M309.3,97c0-3.4,2.6-6.1,6-6.1s6.1,2.7,6.1,6.1v2.6c3.4-4.9,8.3-9.2,16.4-9.2c11.8,0,18.7,8,18.7,20.1v28.1
-                        c0,3.4-2.6,6-6,6s-6.1-2.6-6.1-6v-24.4c0-8.2-4.1-12.8-11.2-12.8c-7,0-11.8,4.9-11.8,13v24.2c0,3.4-2.7,6-6.1,6
-                        c-3.3,0-6-2.6-6-6V97z"/>
-                    <path class="st0" d="M418.7,138.6c0,3.4-2.7,6-6,6c-3.4,0-6.1-2.6-6.1-6v-3.3c-3.9,5.5-9.4,9.9-17.9,9.9
-                        c-12.3,0-24.4-9.9-24.4-27.3v-0.2c0-17.4,11.8-27.3,24.4-27.3c8.7,0,14.1,4.3,17.9,9.3V76.8c0-3.4,2.7-6,6-6
-                        c3.4,0,6.1,2.6,6.1,6V138.6z M376.5,117.7v0.2c0,10.2,7,16.8,15.1,16.8s15.2-6.8,15.2-16.8v-0.2c0-10.2-7.2-16.8-15.2-16.8
-                        C383.3,100.8,376.5,107.2,376.5,117.7z"/>
-                    <path class="st0" d="M426.3,128.9v-0.2c0-11.3,8.9-16.9,21.7-16.9c5.9,0,10.1,0.9,14.1,2.2v-1.3c0-7.5-4.6-11.4-13-11.4
-                        c-4.6,0-8.4,0.8-11.6,2.1c-0.7,0.2-1.3,0.3-1.9,0.3c-2.8,0-5.1-2.2-5.1-5c0-2.2,1.5-4.1,3.3-4.8c5-1.9,10.1-3.1,16.9-3.1
-                        c7.9,0,13.7,2.1,17.4,5.9c3.9,3.8,5.7,9.4,5.7,16.2v25.9c0,3.3-2.6,5.8-5.9,5.8c-3.5,0-5.9-2.4-5.9-5.1v-2
-                        c-3.6,4.3-9.1,7.7-17.1,7.7C435.1,145.1,426.3,139.5,426.3,128.9z M462.4,125.1v-3.6c-3.1-1.2-7.2-2.1-11.9-2.1
-                        c-7.8,0-12.3,3.3-12.3,8.8v0.2c0,5.1,4.5,8,10.3,8C456.3,136.4,462.4,131.8,462.4,125.1z"/>
-                    <path class="st0" d="M486.2,129.5v-27.7h-2c-2.9,0-5.2-2.3-5.2-5.2c0-2.9,2.3-5.2,5.2-5.2h2v-9c0-3.3,2.7-6,6.1-6
-                        c3.3,0,6,2.7,6,6v9h9.5c2.9,0,5.3,2.3,5.3,5.2c0,2.9-2.4,5.2-5.3,5.2h-9.5v25.8c0,4.7,2.4,6.6,6.5,6.6c1.4,0,2.6-0.3,3-0.3
-                        c2.7,0,5.1,2.2,5.1,5c0,2.2-1.5,4-3.2,4.7c-2.6,0.9-5.1,1.4-8.3,1.4C492.5,144.9,486.2,141,486.2,129.5z"/>
-                    <path class="st0" d="M567.4,138.6c0,3.3-2.7,6-6.1,6c-3.3,0-6.1-2.6-6.1-6v-2.7c-3.4,5-8.3,9.3-16.4,9.3
-                        c-11.8,0-18.7-8-18.7-20.2V97c0-3.4,2.7-6.1,6-6.1c3.4,0,6.1,2.7,6.1,6.1v24.4c0,8.2,4.1,12.7,11.2,12.7c7,0,11.8-4.8,11.8-12.9
-                        V97c0-3.4,2.7-6.1,6.1-6.1c3.3,0,6.1,2.7,6.1,6.1L567.4,138.6L567.4,138.6z"/>
-                    <path class="st0" d="M578.4,97c0-3.4,2.6-6.1,6-6.1s6.1,2.7,6.1,6.1v2.5c3.4-4.7,8-9.1,16-9.1c7.6,0,12.9,3.7,15.7,9.3
-                        c4.2-5.6,9.8-9.3,17.7-9.3c11.4,0,18.4,7.3,18.4,20.1v28.1c0,3.4-2.6,6-6,6s-6.1-2.6-6.1-6v-24.4c0-8.4-3.9-12.8-10.7-12.8
-                        c-6.6,0-11.2,4.6-11.2,13v24.2c0,3.4-2.7,6-6,6c-3.4,0-6.1-2.6-6.1-6v-24.5c0-8.2-4-12.7-10.6-12.7c-6.7,0-11.2,5-11.2,13v24.2
-                        c0,3.4-2.7,6-6.1,6c-3.3,0-6-2.6-6-6L578.4,97L578.4,97z"/>
-                    </g>
-                </g>
-                </g>
-            </g>
-          </svg>
-        </div>
-        <div class="card-body">
-          <p class="card-text">
-            <gr>${this.shopName}</gr> will donate <gr>${c(this.price*this.discount,Shopify.checkout.currency)}</gr> to protect Nature. Get recognition for the impact you just made. <gr>Redeem</gr> your impact and brag about it!!!
-          </p>
-          <div class="buttonIn">
-            <input type="text" id="fname" name="fname" value="${this.client.email}">
-            <button id="go_to_mandatum" class="white">REDEEM</button>
-          </div>
-        </div>
-      </div>
-    `,Shopify.Checkout.OrderStatus.addContentBox(o),t.appendChild(d),document.getElementById("go_to_mandatum").addEventListener("click",()=>{d.classList.add("open")}),document.getElementById("mandatum_modal_close").addEventListener("click",()=>{d.classList.remove("open")})}},M=v;var k="mandatum-app.uc.r.appspot.com";async function z(){let s,t,o,d,e,a,n,m,l,u,r,p,h,y=location.pathname.includes("products"),w=location.pathname.includes("orders"),L=document.querySelector("script[src*='mandatum']"),g=new URLSearchParams(L.src.split("?")[1]).get("shop");if(y&&(console.log("Is Product"),o=document.querySelector("body"),d=await fetch(`${location.href.split("?")[0]}.json`).then(i=>i.json()),e=d.product.id,a=await fetch(`https://${k}/isMandatum?shop=${g}&product=${"gid://shopify/Product/"+e}`).then(i=>i.json()),n=a.isMandatum,m=parseFloat(a.descuento),l=parseInt(a.dias),u=a.newProduct.shop.privateMetafield.value!=="false"),u&&n&&y){let i=a.newProduct;console.log("product",i),s=new C(o,g,m,l,e,i),s.init()}if(w){console.log("Is Order");let i=Shopify.checkout.line_items.find(f=>!!f.properties["Mandatum Discount"]);r=!!i,p=parseFloat(i.properties["Mandatum Discount"].split("%")[0])/100,h=parseFloat(i.line_price)}if(w&&r){console.log("Is mandatum Order",p),console.log(h);let i=await fetch(`https://${k}/checkoutData?shop=${g}`).then(f=>f.json());t=new M(p,h,i.name),await t.init()}return{product:s,order:t}}z().then(s=>{window.mandatum=s});
-//# sourceMappingURL=mandatum.js.map
+    button.addEventListener("click", () => {
+      this.toggleModal();
+    });
+  }
+}
