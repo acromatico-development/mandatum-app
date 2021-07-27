@@ -1,4 +1,5 @@
 /// <reference types="url-search-params" />
+import { serverUrl } from "./helpers";
 import MandatumApp from "./product-app";
 import MandatumOrder from "./checkout-app";
 
@@ -6,8 +7,6 @@ type Mandatum = {
   product: MandatumApp,
   order: MandatumOrder
 }
-
-const serverUrl: string = "mandatum-app.uc.r.appspot.com";
 
 async function main(): Promise<Mandatum> {
   let MandatumInstance: MandatumApp,

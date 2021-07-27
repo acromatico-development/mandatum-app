@@ -1,4 +1,4 @@
-import { futureDay, formatMoney } from "./helpers";
+import { futureDay, formatMoney, serverUrl } from "./helpers";
 
 export default class MandatumApp {
   discount: number;

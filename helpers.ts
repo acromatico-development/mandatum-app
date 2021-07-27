@@ -1,3 +1,5 @@
+export const serverUrl: string = "mandatum-app.uc.r.appspot.com";
+
 export function futureDay(days) {
   var result: Date = new Date();
   result.setDate(result.getDate() + days);
