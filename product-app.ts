@@ -666,6 +666,9 @@ export default class MandatumApp {
 
     const fixedProduct = {
       ...shopifyProduct.product,
+      options:[
+        ...shopifyProduct.product.options.map(opt => opt.name)
+      ],
       variants: [
         ...shopifyProduct.product.variants.map((varian) => {
           console.log("front: ", varian);
