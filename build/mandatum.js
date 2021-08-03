@@ -142,6 +142,21 @@ var u="mandatum-app.uc.r.appspot.com";function x(s){var t=new Date;return t.setD
         width: 100%;
         margin: 0;
       }
+      
+      .mandatum-modal .mandatum-modal-box .selector-wrapper {
+        width: 90%;
+        max-width: 500px;
+      }
+      
+      .mandatum-modal .mandatum-modal-box .selector-wrapper label {
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+      
+      .mandatum-modal .mandatum-modal-box .selector-wrapper select {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
 
       .mandatum-modal .mandatum-modal-box p {
         padding: 0;
