@@ -583,7 +583,7 @@ export default class MandatumApp {
                 />
               </g>
             </svg>
-            <p style="color: #767171">Discount:<br/>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</p>
+            <p style="color: #767171" id="discount_circle">Discount:<br/><span>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</span></p>
           </div>
           <div class="svg-badge">
             <svg class="svg-badge" viewBox="0 0 509 509">
@@ -616,7 +616,7 @@ export default class MandatumApp {
                 />
               </g>
             </svg>
-            <p style="color: #548235">Donation:<br/>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</p>
+            <p style="color: #548235" id="donation_circle">Donation:<br/><span>${formatMoney(this.shopifyProduct.variants.edges[0].node.price * (this.discount / 100), this.currency)}</span></p>
           </div>
           <svg class="info-icon" id="mandate_info" viewBox="0 0 20 20" fill="none">
             <path d="M10.0001 18.3334C14.6025 18.3334 18.3334 14.6024 18.3334 10C18.3334 5.39765 14.6025 1.66669 10.0001 1.66669C5.39771 1.66669 1.66675 5.39765 1.66675 10C1.66675 14.6024 5.39771 18.3334 10.0001 18.3334Z" stroke="#541FA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -710,6 +710,10 @@ export default class MandatumApp {
     new Shopify.OptionSelectors("product-select-mandatum", {
       product: fixedProduct,
       onVariantSelected: (variant, selector) => {
+        const discount_circle = document.getElementById("discount_circle");
+        const donation_circle = document.getElementById("donation_circle");
+        const discount_price = discount_circle.querySelector("span");
+        const donation_price = donation_circle.querySelector("span");
         console.log(variant);
         console.log(selector);
 
@@ -726,6 +730,8 @@ export default class MandatumApp {
           document.querySelector("#mandate_mandate");
 
         precioMandatum.innerHTML = `Price | <s>${formatMoney(variant.price, this.currency)}</s> <span>${formatMoney(variant.price * (1 - this.discount / 100), this.currency)}</span>`;
+        discount_price.innerText = `${formatMoney(variant.price * (this.discount / 100), this.currency)}`;
+        donation_price.innerText = `${formatMoney(variant.price * (this.discount / 100), this.currency)}`;
 
         this.shopifyVariant = variant;
 
